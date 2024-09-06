@@ -17,6 +17,9 @@ import com.fiec.ckplanches.model.order.Order;
 import com.fiec.ckplanches.model.purchase.Purchase;
 import com.fiec.ckplanches.repositories.OrderRepository;
 import com.fiec.ckplanches.repositories.PurchaseRepository;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -32,7 +35,8 @@ public class DashboardController {
     public ResponseEntity<Map<String, Object>> values() {
         try {
             LocalDateTime endDate = LocalDateTime.now();
-            LocalDateTime startDate = endDate.minusDays(7);
+            LocalDateTime startDate = endDate.minusDays(LocalDateTime.now().getDayOfWeek().getValue()+1);
+            System.out.println(LocalDateTime.now().getDayOfWeek().getValue()+1);
 
             // Consultar o banco de dados
             List<Purchase> purchases = purchaseRepository.findByPurchaseDateBetween(startDate, endDate);

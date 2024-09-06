@@ -61,4 +61,6 @@ public class Order {
 
     @Column(name = "data_hora_finalizacao", nullable = false)
     private LocalDateTime endDatetime;
+
+    
 }
