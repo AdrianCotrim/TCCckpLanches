@@ -55,4 +55,9 @@ public class SupplyController {
              throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Insumo não encontrado");
         }
     }
+
+    @GetMapping
+    @Secured("ADMIN")
+       
+        
 }

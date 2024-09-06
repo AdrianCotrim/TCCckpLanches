@@ -36,6 +36,12 @@ public class Supply {
     @Column(name = "quantidade", nullable = false)
     private int quantity;
 
+    @Column(name = "quantidade_minima", nullable = false)
+    private int minQuantity;
+
+    @Column(name = "quantidade_maxima", nullable = false)
+    private int maxQuantity;
+
     @ManyToMany(mappedBy = "supplies", cascade = CascadeType.ALL)
     private List<Purchase> purchases;
 
