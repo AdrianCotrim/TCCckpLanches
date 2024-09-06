@@ -17,6 +17,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fiec.ckplanches.model.supply.Supply;
 import com.fiec.ckplanches.repositories.SupplyRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @RestController
 @RequestMapping("/insumos")
 public class SupplyController {
@@ -56,8 +58,17 @@ public class SupplyController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/{name}")
     @Secured("ADMIN")
-       
+    public List<Supply> findByName(@PathVariable String nome) {
+       return dao.findByName(nome) ;
+    }
+
+    @GetMapping("/procurar/{id}")
+    @Secured("ADMIN")
+    public Supply findById(@PathVariable Integer id) {
+        return dao.findById(id) 
+        .orElseThrow(() -> new EntityNotFoundException("Insumo com ID " + id + " não encontrado"));
+}
         
 }

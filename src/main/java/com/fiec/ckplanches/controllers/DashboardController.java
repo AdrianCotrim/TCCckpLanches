@@ -17,8 +17,7 @@ import com.fiec.ckplanches.model.order.Order;
 import com.fiec.ckplanches.model.purchase.Purchase;
 import com.fiec.ckplanches.repositories.OrderRepository;
 import com.fiec.ckplanches.repositories.PurchaseRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
