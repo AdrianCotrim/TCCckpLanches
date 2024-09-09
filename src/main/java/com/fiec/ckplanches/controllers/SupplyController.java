@@ -1,4 +1,6 @@
 package com.fiec.ckplanches.controllers;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fiec.ckplanches.DTO.SupplyDTO;
 import com.fiec.ckplanches.model.supply.Supply;
 import com.fiec.ckplanches.repositories.SupplyRepository;
 
@@ -28,9 +31,28 @@ public class SupplyController {
 
     @GetMapping
     @Secured("ADMIN")
-    public List<Supply> listarInsumos() {
-        return (List<Supply>) dao.findAll();
+    public List<SupplyDTO> listarInsumos() {
+        List<Supply> supplies = dao.findAll();
+        List<SupplyDTO> supplyDTOs = new ArrayList<>(); // Inicialize a lista
+
+        for (Supply element : supplies) {
+            SupplyDTO supplyDTO = new SupplyDTO(
+                element.getId(), 
+                element.getName(), 
+                element.getQuantity(),
+                element.getMinQuantity(),
+                element.getMaxQuantity(),
+                element.getLot().getExpiration_date());
+            supplyDTOs.add(supplyDTO);
+        }
+
+        supplyDTOs.forEach(element -> {
+            System.out.println(supplyDTOs);
+        });
+        
+        return supplyDTOs;
     }
+
 
     @PostMapping
     @Secured("ADMIN")

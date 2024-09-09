@@ -35,7 +35,6 @@ public class DashboardController {
         try {
             LocalDateTime endDate = LocalDateTime.now();
             LocalDateTime startDate = endDate.minusDays(LocalDateTime.now().getDayOfWeek().getValue()+1);
-            System.out.println(LocalDateTime.now().getDayOfWeek().getValue()+1);
 
             // Consultar o banco de dados
             List<Purchase> purchases = purchaseRepository.findByPurchaseDateBetween(startDate, endDate);

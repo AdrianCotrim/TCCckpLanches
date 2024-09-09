@@ -32,8 +32,12 @@ public class Supply {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "descricao", nullable = false)
+    @Column(name = "name", nullable = false, length=100)
     private String name;
+
+    @Column(name = "descricao")
+    private String description;
+
     @Column(name = "quantidade", nullable = false)
     private int quantity;
 
