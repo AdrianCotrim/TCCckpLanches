@@ -1,6 +1,6 @@
 package com.fiec.ckplanches.model.lot;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import com.fiec.ckplanches.model.supply.Supply;
@@ -30,7 +30,7 @@ public class Lot {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     @Column(name = "data_validade", nullable = false)
-    private LocalDateTime expiration_date;
+    private Date expiration_date;
 
     @OneToMany(mappedBy = "lot", cascade = CascadeType.ALL)
     private List<Supply> supplies;
