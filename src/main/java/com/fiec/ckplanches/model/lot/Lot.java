@@ -1,6 +1,6 @@
 package com.fiec.ckplanches.model.lot;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import com.fiec.ckplanches.model.supply.Supply;
@@ -27,7 +27,7 @@ import lombok.Setter;
 public class Lot {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "data_validade", nullable = false)
     private Date expiration_date;

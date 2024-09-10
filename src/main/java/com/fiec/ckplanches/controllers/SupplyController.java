@@ -36,21 +36,17 @@ public class SupplyController {
         List<SupplyDTO> supplyDTOs = new ArrayList<>(); // Inicialize a lista
 
         for (Supply element : supplies) {
-            // SupplyDTO supplyDTO = new SupplyDTO(
-            //     element.getId(),
-            //     element.getName(),
-            //     element.getDescription(),
-            //     element.getQuantity(),
-            //     element.getMinQuantity(),
-            //     element.getMaxQuantity(),
-            //     // element.getLot().getExpiration_date()
-            // );
-            // supplyDTOs.add(supplyDTO);
+            SupplyDTO supplyDTO = new SupplyDTO(
+                element.getId(),
+                element.getName(),
+                element.getDescription(),
+                element.getQuantity(),
+                element.getMinQuantity(),
+                element.getMaxQuantity(),
+                element.getLot().getExpiration_date()
+            );
+            supplyDTOs.add(supplyDTO);
         }
-
-        supplyDTOs.forEach(element -> {
-            System.out.println(supplyDTOs);
-        });
         
         return supplyDTOs;
     }
