@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.fiec.ckplanches.DTO.SupplyDTO;
 import com.fiec.ckplanches.DTO.SupplyTableDTO;
+import com.fiec.ckplanches.model.lot.Lot;
 import com.fiec.ckplanches.model.supply.Supply;
 import com.fiec.ckplanches.repositories.LotRepository;
 import com.fiec.ckplanches.repositories.SupplyRepository;
@@ -59,16 +60,23 @@ public class SupplyController {
 
     @PostMapping
     @Secured("ADMIN")
-    public Supply criarInsumo(@RequestBody SupplyDTO insumo) {
+    public SupplyTableDTO criarInsumo(@RequestBody SupplyDTO insumo) {
         Supply insumoNovo = new Supply();
+        Lot lot = this.lotRepository.findById(insumo.lot()).orElse(null);
         insumoNovo.setName(insumo.name());
         insumoNovo.setDescription(insumo.description());
         insumoNovo.setQuantity(insumo.quantity());
         insumoNovo.setMinQuantity(insumo.minQuantity());
         insumoNovo.setMaxQuantity(insumo.maxQuantity());
-        insumoNovo.setLot(this.lotRepository.findById(insumo.lot()).orElse(null));
-        Supply novoInsumo = dao.save(insumoNovo);
-        return novoInsumo;
+        insumoNovo.setLot(lot);
+        dao.save(insumoNovo);
+        return new SupplyTableDTO(insumoNovo.getId(), 
+        insumoNovo.getName(), 
+        insumoNovo.getDescription(), 
+        insumoNovo.getQuantity(), 
+        insumoNovo.getMinQuantity(), 
+        insumoNovo.getMaxQuantity(), 
+        lot.getExpiration_date());
 
     }
 
