@@ -1,14 +1,11 @@
 package com.fiec.ckplanches.DTO;
 
-import java.sql.Date;
-
-public record SupplyDTO( 
-    int id,
-    String name,
+public record SupplyDTO(
     String description,
-    int quantity,
-    int minQuantity,
+    int lot,
     int maxQuantity,
-    Date experation_date
+    int minQuantity,
+    String name,
+    int quantity
 ) {
 }

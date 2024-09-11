@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fiec.ckplanches.DTO.SupplyDTO;
+import com.fiec.ckplanches.DTO.SupplyTableDTO;
 import com.fiec.ckplanches.model.supply.Supply;
+import com.fiec.ckplanches.repositories.LotRepository;
 import com.fiec.ckplanches.repositories.SupplyRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -29,14 +31,17 @@ public class SupplyController {
     @Autowired
     private SupplyRepository dao;
 
+    @Autowired
+    private LotRepository lotRepository;
+
     @GetMapping
     @Secured("ADMIN")
-    public List<SupplyDTO> listarInsumos() {
+    public List<SupplyTableDTO> listarInsumos() {
         List<Supply> supplies = dao.findAll();
-        List<SupplyDTO> supplyDTOs = new ArrayList<>(); // Inicialize a lista
+        List<SupplyTableDTO> supplyDTOs = new ArrayList<>(); // Inicialize a lista
 
         for (Supply element : supplies) {
-            SupplyDTO supplyDTO = new SupplyDTO(
+            SupplyTableDTO supplyDTO = new SupplyTableDTO(
                 element.getId(),
                 element.getName(),
                 element.getDescription(),
@@ -54,8 +59,15 @@ public class SupplyController {
 
     @PostMapping
     @Secured("ADMIN")
-    public Supply criarInsumo(@RequestBody Supply insumo) {
-        Supply novoInsumo = dao.save(insumo);
+    public Supply criarInsumo(@RequestBody SupplyDTO insumo) {
+        Supply insumoNovo = new Supply();
+        insumoNovo.setName(insumo.name());
+        insumoNovo.setDescription(insumo.description());
+        insumoNovo.setQuantity(insumo.quantity());
+        insumoNovo.setMinQuantity(insumo.minQuantity());
+        insumoNovo.setMaxQuantity(insumo.maxQuantity());
+        insumoNovo.setLot(this.lotRepository.findById(insumo.lot()).orElse(null));
+        Supply novoInsumo = dao.save(insumoNovo);
         return novoInsumo;
 
     }
