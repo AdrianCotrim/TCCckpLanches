@@ -2,6 +2,7 @@ package com.fiec.ckplanches.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -80,11 +82,30 @@ public class SupplyController {
 
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Secured("ADMIN")
-    public Supply editarInsumo(@RequestBody Supply insumo) {
-        Supply novoInsumo = dao.save(insumo);
-        return novoInsumo;
+    public SupplyTableDTO editarInsumo(@RequestBody SupplyDTO insumo, @PathVariable Integer id) {
+        Supply insumoNovo = null;
+        Optional<Supply> novoInsumo = dao.findById(id);
+        Lot lot = this.lotRepository.findById(insumo.lot()).orElse(null);
+        if(novoInsumo.isPresent()){
+            insumoNovo = novoInsumo.get();
+            insumoNovo.setName(insumo.name());
+            insumoNovo.setDescription(insumo.description());
+            insumoNovo.setQuantity(insumo.quantity());
+            insumoNovo.setMinQuantity(insumo.minQuantity());
+            insumoNovo.setMaxQuantity(insumo.maxQuantity());
+            if(lot != null) insumoNovo.setLot(lot);
+            insumoNovo = dao.save(insumoNovo);
+        }
+        
+        return new SupplyTableDTO(insumoNovo.getId(), 
+        insumoNovo.getName(), 
+        insumoNovo.getDescription(), 
+        insumoNovo.getQuantity(), 
+        insumoNovo.getMinQuantity(), 
+        insumoNovo.getMaxQuantity(), 
+        (lot != null) ? lot.getExpiration_date() : null);
         
     }
 
