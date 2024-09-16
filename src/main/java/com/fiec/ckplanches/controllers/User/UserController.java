@@ -1,4 +1,4 @@
-package com.fiec.ckplanches.controllers;
+package com.fiec.ckplanches.controllers.User;
 import com.fiec.ckplanches.services.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
