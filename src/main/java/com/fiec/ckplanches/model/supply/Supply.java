@@ -12,9 +12,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -53,7 +52,6 @@ public class Supply {
     @ManyToMany(mappedBy = "supplies", cascade = CascadeType.ALL)
     private List<Product> products;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_lote", nullable = true)
-    private Lot lot;
+    @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
+    private List<Lot> lots;
 }
