@@ -8,7 +8,9 @@ import com.fiec.ckplanches.model.user.User;
 import com.fiec.ckplanches.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/userManager")
@@ -48,9 +52,24 @@ public class UserManagerController {
 
     @PostMapping
     @Secured("ADMIN")
-    public User criarUsuario(@RequestBody User usuario) {
-        User usuarioNovo = dao.save(usuario);
-        return usuarioNovo;
+    public ResponseEntity<?> criarUsuario(@RequestBody User usuario) {
+
+         if (dao.findByEmail(usuario.getUserEmail()).isPresent()) {
+        Map<String, String> erro = new HashMap<>();
+        erro.put("erro", "O e-mail já está registrado.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+    }
+    if (dao.findByname(usuario.getUsername()).isPresent()) {
+        Map<String, String> erro = new HashMap<>();
+        erro.put("erro", "O nome de usuário já está registrado.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+    }
+
+    String senha = usuario.getPassword();
+    usuario.setUserPassword(BCrypt.hashpw(senha, BCrypt.gensalt()));
+    User usuarioNovo = dao.save(usuario);
+    return ResponseEntity.status(HttpStatus.CREATED).body(usuarioNovo);
+       
     }
 
     @PutMapping
