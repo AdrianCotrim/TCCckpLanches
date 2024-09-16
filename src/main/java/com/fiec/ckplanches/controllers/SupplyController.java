@@ -2,10 +2,12 @@ package com.fiec.ckplanches.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,7 +53,7 @@ public class SupplyController {
                 element.getQuantity(),
                 element.getMinQuantity(),
                 element.getMaxQuantity(),
-                element.getLot().getExpiration_date()
+                element.getLot() != null ? element.getLot().getExpiration_date() : null
             );
             supplyDTOs.add(supplyDTO);
         }
@@ -62,51 +64,68 @@ public class SupplyController {
 
     @PostMapping
     @Secured("ADMIN")
-    public SupplyTableDTO criarInsumo(@RequestBody SupplyDTO insumo) {
-        Supply insumoNovo = new Supply();
-        Lot lot = this.lotRepository.findById(insumo.lot()).orElse(null);
-        insumoNovo.setName(insumo.name());
-        insumoNovo.setDescription(insumo.description());
-        insumoNovo.setQuantity(insumo.quantity());
-        insumoNovo.setMinQuantity(insumo.minQuantity());
-        insumoNovo.setMaxQuantity(insumo.maxQuantity());
-        insumoNovo.setLot(lot);
-        dao.save(insumoNovo);
-        return new SupplyTableDTO(insumoNovo.getId(), 
-        insumoNovo.getName(), 
-        insumoNovo.getDescription(), 
-        insumoNovo.getQuantity(), 
-        insumoNovo.getMinQuantity(), 
-        insumoNovo.getMaxQuantity(), 
-        lot.getExpiration_date());
-
-    }
-
-    @PutMapping("/{id}")
-    @Secured("ADMIN")
-    public SupplyTableDTO editarInsumo(@RequestBody SupplyDTO insumo, @PathVariable Integer id) {
-        Supply insumoNovo = null;
-        Optional<Supply> novoInsumo = dao.findById(id);
-        Lot lot = this.lotRepository.findById(insumo.lot()).orElse(null);
-        if(novoInsumo.isPresent()){
-            insumoNovo = novoInsumo.get();
+    public ResponseEntity<?> criarInsumo(@RequestBody SupplyDTO insumo) {
+        try{
+            Supply insumoNovo = new Supply();
+            Optional<Lot> lotOptional = this.lotRepository.findById(insumo.lot());
+            Lot lot = null;
+            if(lotOptional.isPresent())lot = lotOptional.get();
+            else if(insumo.lot() !=0) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lote não encontrado");
             insumoNovo.setName(insumo.name());
             insumoNovo.setDescription(insumo.description());
             insumoNovo.setQuantity(insumo.quantity());
             insumoNovo.setMinQuantity(insumo.minQuantity());
             insumoNovo.setMaxQuantity(insumo.maxQuantity());
-            if(lot != null) insumoNovo.setLot(lot);
-            insumoNovo = dao.save(insumoNovo);
+            insumoNovo.setLot(lot);
+            dao.save(insumoNovo);
+            return ResponseEntity.ok(Map.of("result", new SupplyTableDTO(insumoNovo.getId(), 
+            insumoNovo.getName(), 
+            insumoNovo.getDescription(), 
+            insumoNovo.getQuantity(), 
+            insumoNovo.getMinQuantity(), 
+            insumoNovo.getMaxQuantity(), 
+            lot.getExpiration_date())));
         }
-        
-        return new SupplyTableDTO(insumoNovo.getId(), 
-        insumoNovo.getName(), 
-        insumoNovo.getDescription(), 
-        insumoNovo.getQuantity(), 
-        insumoNovo.getMinQuantity(), 
-        insumoNovo.getMaxQuantity(), 
-        (lot != null) ? lot.getExpiration_date() : null);
-        
+        catch(Exception erro){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro inesperado no servidor");
+        }
+    }
+
+    @PutMapping("/{id}")
+    @Secured("ADMIN")
+    public ResponseEntity<?> editarInsumo(@RequestBody SupplyDTO insumo, @PathVariable Integer id) {
+        try{
+            Supply insumoNovo = null;
+            Optional<Supply> novoInsumo = dao.findById(id);
+            Lot lot = null;
+            Optional<Lot> lotOptional = this.lotRepository.findById(insumo.lot());
+            if(lotOptional.isPresent())lot = lotOptional.get();
+            else if(insumo.lot() !=0) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lote não encontrado");
+            if(novoInsumo.isPresent()){
+                insumoNovo = novoInsumo.get();
+                insumoNovo.setName(insumo.name());
+                insumoNovo.setDescription(insumo.description());
+                insumoNovo.setQuantity(insumo.quantity());
+                insumoNovo.setMinQuantity(insumo.minQuantity());
+                insumoNovo.setMaxQuantity(insumo.maxQuantity());
+                insumoNovo.setLot(lot == null? insumoNovo.getLot():lot);
+                insumoNovo = dao.save(insumoNovo);
+            }
+            else{
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Este Insumo não existe");
+            }
+            
+            return ResponseEntity.ok(Map.of("result", new SupplyTableDTO(insumoNovo.getId(), 
+            insumoNovo.getName(), 
+            insumoNovo.getDescription(), 
+            insumoNovo.getQuantity(), 
+            insumoNovo.getMinQuantity(), 
+            insumoNovo.getMaxQuantity(), 
+            (lot != null) ? lot.getExpiration_date() : null)));
+        }
+        catch(Exception erro){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro inesperado no servidor");
+        }
     }
 
     @DeleteMapping("/{id}")

@@ -2,10 +2,10 @@ package com.fiec.ckplanches.DTO;
 
 public record SupplyDTO(
     String description,
-    int lot,
-    int maxQuantity,
-    int minQuantity,
+    Integer lot,
+    Integer maxQuantity,
+    Integer minQuantity,
     String name,
-    int quantity
+    Integer quantity
 ) {
 }
