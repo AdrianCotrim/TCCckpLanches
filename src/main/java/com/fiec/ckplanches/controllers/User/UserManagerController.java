@@ -1,15 +1,13 @@
 package com.fiec.ckplanches.controllers.User;
 
-import com.fiec.ckplanches.DTO.SupplyTableDTO;
 import com.fiec.ckplanches.DTO.UserTableDTO;
-import com.fiec.ckplanches.model.product.Product;
-import com.fiec.ckplanches.model.supply.Supply;
 import com.fiec.ckplanches.model.user.User;
 import com.fiec.ckplanches.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,16 +52,17 @@ public class UserManagerController {
     @Secured("ADMIN")
     public ResponseEntity<?> criarUsuario(@RequestBody User usuario) {
 
-         if (dao.findByEmail(usuario.getUserEmail()).isPresent()) {
+         if (dao.findByUserEmail(usuario.getUserEmail()).isPresent()) {
         Map<String, String> erro = new HashMap<>();
         erro.put("erro", "O e-mail já está registrado.");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
     }
-    if (dao.findByname(usuario.getUsername()).isPresent()) {
-        Map<String, String> erro = new HashMap<>();
-        erro.put("erro", "O nome de usuário já está registrado.");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-    }
+        UserDetails userDetails = dao.findByUsername(usuario.getUsername());
+        if (userDetails != null) {
+            Map<String, String> erro = new HashMap<>();
+            erro.put("erro", "O nome de usuário já está registrado.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+        }
 
     String senha = usuario.getPassword();
     usuario.setUserPassword(BCrypt.hashpw(senha, BCrypt.gensalt()));
