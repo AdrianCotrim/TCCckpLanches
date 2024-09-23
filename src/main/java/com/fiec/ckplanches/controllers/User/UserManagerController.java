@@ -33,6 +33,7 @@ public class UserManagerController {
     @Autowired
     private UserRepository dao;
 
+    @Secured("ADMIN")
     @GetMapping
     public List<User> listarUsuarios() {
         List<User> usersAtivos = new ArrayList<>();
