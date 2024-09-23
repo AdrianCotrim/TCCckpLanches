@@ -1,8 +1,11 @@
 package com.fiec.ckplanches.controllers.User;
 
-import com.fiec.ckplanches.DTO.UserTableDTO;
-import com.fiec.ckplanches.model.user.User;
-import com.fiec.ckplanches.repositories.UserRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.fiec.ckplanches.model.user.StatusConta;
+import com.fiec.ckplanches.model.user.User;
+import com.fiec.ckplanches.repositories.UserRepository;
 
 @RestController
 @RequestMapping("/userManager")
@@ -32,20 +34,14 @@ public class UserManagerController {
     private UserRepository dao;
 
     @GetMapping
-    public List<UserTableDTO> listarUsuarios() {
-        List<User> users = dao.findAll();
-        List<UserTableDTO> UserDTOs = new ArrayList<>(); // Inicialize a lista
-
-        for (User element : users) {
-            UserTableDTO UserDTO = new UserTableDTO(
-                    element.getUserId(),
-                    element.getUsername(),
-                    element.getUserEmail(),
-                    element.getRole()
-            );
-            UserDTOs.add(UserDTO);
+    public List<User> listarUsuarios() {
+        List<User> usersAtivos = new ArrayList<>();
+        for(User user:dao.findAll()){
+            if(user.getStatusConta() == StatusConta.ATIVO){
+                usersAtivos.add(user);
+            }
         }
-        return UserDTOs;
+        return usersAtivos;
     }
 
     @PostMapping
@@ -73,9 +69,22 @@ public class UserManagerController {
 
     @PutMapping
     @Secured("ADMIN")
-    public User editarUsuario(@RequestBody User user) {
-        User userNovo = dao.save(user);
-        return userNovo;
+    public ResponseEntity<?> editarUsuario(@RequestBody User user) {
+        Optional<User> userOptional = dao.findByUserEmail(user.getUserEmail());
+        if(userOptional.isEmpty()){
+            Map<String, String> erro = new HashMap<>();
+            erro.put("erro", "Usuário não encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
+        }
+        User usuarioEditado = userOptional.get();
+        if(user.getPassword() != null){
+            String senha = user.getPassword();
+            user.setUserPassword(BCrypt.hashpw(senha, BCrypt.gensalt()));
+        }
+        else user.setUserPassword(usuarioEditado.getPassword());
+        user.setUserId(usuarioEditado.getUserId());
+        user = dao.save(user);
+        return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/{id}")

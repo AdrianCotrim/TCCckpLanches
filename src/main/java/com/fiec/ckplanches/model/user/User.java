@@ -1,16 +1,26 @@
 package com.fiec.ckplanches.model.user;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import com.fiec.ckplanches.model.enums.Status;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "usuarios")
@@ -37,6 +47,14 @@ public class User implements UserDetails{
     @Enumerated(EnumType.STRING)
     @Column(name = "nivel_acesso")
     private UserRole role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_conta")
+    private StatusConta statusConta;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 
     public User(String username, String userPassword, String userEmail, UserRole role) {
         this.username = username;
