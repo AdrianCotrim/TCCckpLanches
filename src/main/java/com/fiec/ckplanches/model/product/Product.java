@@ -30,9 +30,6 @@ public class Product {
     @Column(name = "valor_produto")
     private Double product_value;
 
-    @Column(name = "quantidade_produto")
-    private Integer product_quantity;
-
     @ManyToMany
     @JoinTable(
         name = "insumo_produto",

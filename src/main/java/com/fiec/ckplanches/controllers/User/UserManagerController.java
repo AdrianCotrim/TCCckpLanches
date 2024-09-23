@@ -32,6 +32,7 @@ public class UserManagerController {
     private UserRepository dao;
 
     @GetMapping
+    @Secured("ADMIN")
     public List<UserTableDTO> listarUsuarios() {
         List<User> users = dao.findAll();
         List<UserTableDTO> UserDTOs = new ArrayList<>(); // Inicialize a lista
