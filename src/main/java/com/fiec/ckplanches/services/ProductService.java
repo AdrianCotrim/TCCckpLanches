@@ -50,9 +50,9 @@ public class ProductService {
         return nomeNovaImagem;  // Retorna o nome da nova imagem (que é o mesmo)
     }
 
-    public Product criarProduto(ProductCreateDTO produtoDTO, MultipartFile imagem) throws IOException {
+    public Product criarProduto(ProductCreateDTO produtoDTO) throws IOException {
         // Salva a imagem
-        String nomeImagem = salvarImagem(imagem);
+        String nomeImagem = salvarImagem(produtoDTO.imagem());
 
         // Cria o novo produto
         Product produtoNovo = new Product();

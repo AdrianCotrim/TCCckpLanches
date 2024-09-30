@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fiec.ckplanches.DTO.ProductCreateDTO;
@@ -66,16 +64,8 @@ public class ProductController {
 
     @PostMapping
     @Secured("ADMIN")
-    public ResponseEntity<?> criarProduto(@RequestBody ProductCreateDTO produtoDTO,
-                                                 @RequestParam("imagem") MultipartFile imagem) throws IOException {
-
-            // Validação do tipo de imagem
-        String tipoArquivo = imagem.getContentType();
-        if (!"image/jpeg".equals(tipoArquivo) && !"image/png".equals(tipoArquivo)) {
-            return ResponseEntity.badRequest().body("Formato de imagem não suportado. Aceito: JPEG ou PNG.");
-        }
-
-        Product produtoCriado = productService.criarProduto(produtoDTO, imagem);
+    public ResponseEntity<?> criarProduto(@RequestBody ProductCreateDTO produtoDTO) throws IOException {
+        Product produtoCriado = productService.criarProduto(produtoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
     }
 
