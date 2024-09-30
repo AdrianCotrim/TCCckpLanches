@@ -5,7 +5,8 @@ import org.springframework.web.multipart.MultipartFile;
 public record ProductCreateDTO(
     String productName,
     Double productValue,
-    MultipartFile imagem // Arquivo da imagem
+    MultipartFile imagem, // Arquivo da imagem
+    String description
 ) {
     
 }
