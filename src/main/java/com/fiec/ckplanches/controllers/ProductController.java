@@ -1,12 +1,18 @@
 package com.fiec.ckplanches.controllers;
 
-
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
-
 import java.util.Optional;
-import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,15 +22,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fiec.ckplanches.DTO.ProductCreateDTO;
 import com.fiec.ckplanches.DTO.ProductDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
 import com.fiec.ckplanches.model.product.Product;
 import com.fiec.ckplanches.repositories.ProductRepository;
-
-import java.util.ArrayList;
+import com.fiec.ckplanches.services.ProductService;
 
 @RestController
 @RequestMapping("/produtos")
@@ -32,62 +40,93 @@ public class ProductController {
 
     @Autowired
     private ProductRepository dao;
+    
+    @Autowired
+    private ProductService productService;
+
+    private final String pastaImagens = "C:\\Users\\37203\\Desktop\\TCCckpLanches\\src\\main\\resources\\ProductImages";
 
     @GetMapping
-    public List<ProductTableDTO> listarProdutos() {
+    public List<ProductTableDTO> listarProdutos() throws IOException {
         List<Product> products = dao.findAll();
         List<ProductTableDTO> productDTOs = new ArrayList<>();
 
         for (Product element : products) {
-            ProductTableDTO productDTO = new ProductTableDTO(
+            String caminhoImagem = element.getImagemUrl(); // Apenas o nome da imagem
+            productDTOs.add(new ProductTableDTO(
                 element.getProduct_id(),
                 element.getProduct_name(),
-                element.getProduct_value()
-            );
-            productDTOs.add(productDTO);
+                element.getProduct_value(),
+                caminhoImagem,
+                element.getDescription() // Não incluir o caminho completo
+            ));
         }
         return productDTOs;
     }
 
     @PostMapping
     @Secured("ADMIN")
-    public Product criarProduto(@RequestBody Product produto) {
-        Product produtoNovo = dao.save(produto);
-        return produtoNovo;
+    public ResponseEntity<?> criarProduto(@RequestBody ProductCreateDTO produtoDTO,
+                                                 @RequestParam("imagem") MultipartFile imagem) throws IOException {
+
+            // Validação do tipo de imagem
+        String tipoArquivo = imagem.getContentType();
+        if (!"image/jpeg".equals(tipoArquivo) && !"image/png".equals(tipoArquivo)) {
+            return ResponseEntity.badRequest().body("Formato de imagem não suportado. Aceito: JPEG ou PNG.");
+        }
+
+        Product produtoCriado = productService.criarProduto(produtoDTO, imagem);
+        return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Secured("ADMIN")
     public ResponseEntity<?> editarProduto(@RequestBody ProductDTO produto, @PathVariable Integer id) {
         try {
-            Product produtoNovo = null;
-            Optional<Product> novoProduto = dao.findById(id);
-            if (novoProduto.isPresent()) {
-                produtoNovo = novoProduto.get();
+            Optional<Product> produtoExistente = dao.findById(id);
+            if (produtoExistente.isPresent()) {
+                Product produtoNovo = produtoExistente.get();
                 produtoNovo.setProduct_name(produto.product_name());
                 produtoNovo.setProduct_value(produto.product_value());
                 produtoNovo = dao.save(produtoNovo);
+                
+                return ResponseEntity.ok(new ProductTableDTO(
+                    produtoNovo.getProduct_id(),
+                    produtoNovo.getProduct_name(),
+                    produtoNovo.getProduct_value(),
+                    produtoNovo.getImagemUrl(), // Nome da imagem
+                    produtoNovo.getDescription()
+                ));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Este Produto não existe");
             }
-    
-            return ResponseEntity.ok(Map.of("result", new ProductTableDTO(
-                produtoNovo.getProduct_id(),
-                produtoNovo.getProduct_name(),
-                produtoNovo.getProduct_value()
-            )));
         } catch (Exception erro) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro inesperado no servidor");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro inesperado no servidor: " + erro.getMessage());
         }
     }
+
     @DeleteMapping("/{id}")
     @Secured("ADMIN")
-    public void deletarProduto(@PathVariable Integer id) {
+    public ResponseEntity<?> deletarProduto(@PathVariable Integer id) {
         if (dao.existsById(id)) {
             dao.deleteById(id);
+            return ResponseEntity.ok("Produto deletado com sucesso");
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
         }
     }
 
+    @GetMapping("/imagens/{nomeImagem}")
+    public ResponseEntity<Resource> pegarImagem(@PathVariable String nomeImagem) throws IOException {
+        Path caminhoImagem = Paths.get(pastaImagens, nomeImagem);
+
+        if (Files.exists(caminhoImagem)) {
+            Resource resource = new UrlResource(caminhoImagem.toUri());
+            return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG) // Ajuste conforme o tipo da sua imagem
+                .body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

@@ -3,20 +3,18 @@ package com.fiec.ckplanches.model.order;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fiec.ckplanches.model.product.Product;
+import com.fiec.ckplanches.model.productOrder.ProductOrder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.Table;
 
 @Entity
 @Getter
@@ -31,13 +29,8 @@ public class Order {
     private Integer orderId;
 
 
-    @ManyToMany
-    @JoinTable(
-        name = "produto_pedido",
-        joinColumns = @JoinColumn(name = "fk_pedido"),
-        inverseJoinColumns = @JoinColumn(name = "fk_produto")
-    )
-    private List<Product> products;
+    @OneToMany(mappedBy = "order")
+    private List<ProductOrder> productOrders;
 
 
     @Column(name = "estado_pedido", nullable = false, length = 25)

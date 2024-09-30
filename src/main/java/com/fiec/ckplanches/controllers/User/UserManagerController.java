@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,23 +47,23 @@ public class UserManagerController {
     @PostMapping
     @Secured("ADMIN")
     public ResponseEntity<?> criarUsuario(@RequestBody User usuario) {
-
-         if (dao.findByUserEmail(usuario.getUserEmail()).isPresent()) {
-        Map<String, String> erro = new HashMap<>();
-        erro.put("erro", "O e-mail já está registrado.");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-    }
-        UserDetails userDetails = dao.findByUsername(usuario.getUsername());
-        if (userDetails != null) {
+        if (dao.findByUserEmail(usuario.getUserEmail()).isPresent()) {
+            Map<String, String> erro = new HashMap<>();
+            erro.put("erro", "O e-mail já está registrado.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+        }
+        Optional<User> user = dao.findByUserNameReturnUser(usuario.getUsername());
+        if (user.isPresent()) {
             Map<String, String> erro = new HashMap<>();
             erro.put("erro", "O nome de usuário já está registrado.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
         }
+         
 
-    String senha = usuario.getPassword();
-    usuario.setUserPassword(BCrypt.hashpw(senha, BCrypt.gensalt()));
-    User usuarioNovo = dao.save(usuario);
-    return ResponseEntity.status(HttpStatus.CREATED).body(usuarioNovo);
+        String senha = usuario.getPassword();
+        usuario.setUserPassword(BCrypt.hashpw(senha, BCrypt.gensalt()));
+        User usuarioNovo = dao.save(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioNovo);
        
     }
 
@@ -72,12 +71,21 @@ public class UserManagerController {
     @Secured("ADMIN")
     public ResponseEntity<?> editarUsuario(@RequestBody User user) {
         Optional<User> userOptional = dao.findByUserEmail(user.getUserEmail());
+
+        //Tratamento de erros
         if(userOptional.isEmpty()){
             Map<String, String> erro = new HashMap<>();
             erro.put("erro", "Usuário não encontrado");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
         }
+        if(dao.findByUserEmail(user.getUserEmail()) != null || dao.findByUsername(user.getUsername()) != null){
+            Map<String, String> erro = new HashMap<>();
+            erro.put("erro", "O nome ou o email do usuário já estão sendo usados");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+        } 
+
         User usuarioEditado = userOptional.get();
+
         if(user.getPassword() != null){
             String senha = user.getPassword();
             user.setUserPassword(BCrypt.hashpw(senha, BCrypt.gensalt()));

@@ -2,10 +2,19 @@ package com.fiec.ckplanches.model.product;
 
 import java.util.List;
 
-import com.fiec.ckplanches.model.order.Order;
+import com.fiec.ckplanches.model.productOrder.ProductOrder;
 import com.fiec.ckplanches.model.supply.Supply;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +39,12 @@ public class Product {
     @Column(name = "valor_produto")
     private Double product_value;
 
+    @Column(name = "imagem")
+    private String imagemUrl;
+
+    @Column(name = "descricao")
+    private String description;
+
     @ManyToMany
     @JoinTable(
         name = "insumo_produto",
@@ -38,7 +53,7 @@ public class Product {
     )
     private List<Supply> supplies;
 
-    @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
-    private List<Order> orders;
+    @OneToMany(mappedBy = "product")
+    private List<ProductOrder> productOrders;
 
 }
