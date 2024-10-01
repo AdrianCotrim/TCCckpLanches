@@ -28,8 +28,13 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fiec.ckplanches.DTO.ProductCreateDTO;
 import com.fiec.ckplanches.DTO.ProductDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
+import com.fiec.ckplanches.DTO.SupplyDTO;
 import com.fiec.ckplanches.model.product.Product;
+import com.fiec.ckplanches.model.productSupply.ProductSupply;
+import com.fiec.ckplanches.model.supply.Supply;
+import com.fiec.ckplanches.repositories.ProductOrderRepository;
 import com.fiec.ckplanches.repositories.ProductRepository;
+import com.fiec.ckplanches.repositories.ProductSupplyRepository;
 import com.fiec.ckplanches.services.ProductService;
 
 @RestController
@@ -38,6 +43,12 @@ public class ProductController {
 
     @Autowired
     private ProductRepository dao;
+
+    @Autowired
+    private ProductOrderRepository productOrderRepository;
+
+    @Autowired
+    private ProductSupplyRepository productSupplyRepository;
     
     @Autowired
     private ProductService productService;
@@ -51,12 +62,25 @@ public class ProductController {
 
         for (Product element : products) {
             String caminhoImagem = element.getImagemUrl(); // Apenas o nome da imagem
+            List<SupplyDTO> supplyDTOs = new ArrayList<>();
+            List<ProductSupply> productSupplies = productSupplyRepository.findByProduct(element);
+            for(ProductSupply productSupply:productSupplies){
+                Supply supply = productSupply.getSupply();
+                supplyDTOs.add(new SupplyDTO(
+                    supply.getDescription(), 
+                    1, 
+                    supply.getMaxQuantity(), 
+                    supply.getMinQuantity(), 
+                    supply.getName(), 
+                    supply.getQuantity()));
+            }
             productDTOs.add(new ProductTableDTO(
                 element.getProduct_id(),
                 element.getProduct_name(),
                 element.getProduct_value(),
-                caminhoImagem,
-                element.getDescription() // Não incluir o caminho completo
+                caminhoImagem, // Não incluir o caminho completo
+                element.getDescription(),
+                supplyDTOs
             ));
         }
         return productDTOs;
@@ -80,13 +104,14 @@ public class ProductController {
                 produtoNovo.setProduct_value(produto.product_value());
                 produtoNovo = dao.save(produtoNovo);
                 
-                return ResponseEntity.ok(new ProductTableDTO(
-                    produtoNovo.getProduct_id(),
-                    produtoNovo.getProduct_name(),
-                    produtoNovo.getProduct_value(),
-                    produtoNovo.getImagemUrl(), // Nome da imagem
-                    produtoNovo.getDescription()
-                ));
+                return ResponseEntity.ok(produtoNovo);
+                // return ResponseEntity.ok(new ProductTableDTO(
+                //     produtoNovo.getProduct_id(),
+                //     produtoNovo.getProduct_name(),
+                //     produtoNovo.getProduct_value(),
+                //     produtoNovo.getImagemUrl(), // Nome da imagem
+                //     produtoNovo.getDescription()
+                // ));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Este Produto não existe");
             }

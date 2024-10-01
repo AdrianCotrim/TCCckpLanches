@@ -3,7 +3,7 @@ package com.fiec.ckplanches.model.supply;
 import java.util.List;
 
 import com.fiec.ckplanches.model.lot.Lot;
-import com.fiec.ckplanches.model.product.Product;
+import com.fiec.ckplanches.model.productSupply.ProductSupply;
 import com.fiec.ckplanches.model.purchase.Purchase;
 
 import jakarta.persistence.CascadeType;
@@ -49,8 +49,8 @@ public class Supply {
     @ManyToMany(mappedBy = "supplies", cascade = CascadeType.ALL)
     private List<Purchase> purchases;
 
-    @ManyToMany(mappedBy = "supplies", cascade = CascadeType.ALL)
-    private List<Product> products;
+    @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
+    private List<ProductSupply> productSupplies;
 
     @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
     private List<Lot> lots;

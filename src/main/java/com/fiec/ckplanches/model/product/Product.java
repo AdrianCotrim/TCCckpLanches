@@ -3,16 +3,14 @@ package com.fiec.ckplanches.model.product;
 import java.util.List;
 
 import com.fiec.ckplanches.model.productOrder.ProductOrder;
-import com.fiec.ckplanches.model.supply.Supply;
+import com.fiec.ckplanches.model.productSupply.ProductSupply;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -45,15 +43,10 @@ public class Product {
     @Column(name = "descricao")
     private String description;
 
-    @ManyToMany
-    @JoinTable(
-        name = "insumo_produto",
-        joinColumns = @JoinColumn(name = "fk_produto"),
-        inverseJoinColumns = @JoinColumn(name = "fk_insumo")
-    )
-    private List<Supply> supplies;
-
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductOrder> productOrders;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductSupply> productSupplies; 
 
 }
