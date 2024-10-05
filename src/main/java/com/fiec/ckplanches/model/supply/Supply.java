@@ -49,7 +49,7 @@ public class Supply {
     @ManyToMany(mappedBy = "supplies", cascade = CascadeType.ALL)
     private List<Purchase> purchases;
 
-    @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "supply", cascade = CascadeType.REMOVE)
     private List<ProductSupply> productSupplies;
 
     @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)

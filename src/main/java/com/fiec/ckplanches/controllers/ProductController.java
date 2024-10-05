@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fiec.ckplanches.DTO.ProductCreateDTO;
@@ -53,7 +55,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    private final String pastaImagens = "C:\\Users\\37203\\Desktop\\TCCckpLanches\\src\\main\\resources\\ProductImages";
+    private final String pastaImagens = "C:\\Users\\Eder\\Desktop\\TCCckpLanches\\src\\main\\resources\\ProductImages";
 
     @GetMapping
     public List<ProductTableDTO> listarProdutos() throws IOException {
@@ -88,8 +90,8 @@ public class ProductController {
 
     @PostMapping
     @Secured("ADMIN")
-    public ResponseEntity<?> criarProduto(@RequestBody ProductCreateDTO produtoDTO) throws IOException {
-        Product produtoCriado = productService.criarProduto(produtoDTO);
+    public ResponseEntity<?> criarProduto(@RequestPart ProductCreateDTO produtoDTO, @RequestPart("imagem") MultipartFile imagem) throws IOException {
+        Product produtoCriado = productService.criarProduto(produtoDTO, imagem);
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
     }
 
@@ -98,20 +100,33 @@ public class ProductController {
     public ResponseEntity<?> editarProduto(@RequestBody ProductDTO produto, @PathVariable Integer id) {
         try {
             Optional<Product> produtoExistente = dao.findById(id);
+            List<SupplyDTO> supplyDTOs = new ArrayList<>();
             if (produtoExistente.isPresent()) {
                 Product produtoNovo = produtoExistente.get();
                 produtoNovo.setProduct_name(produto.product_name());
                 produtoNovo.setProduct_value(produto.product_value());
                 produtoNovo = dao.save(produtoNovo);
+
+                List<ProductSupply> productSupplies = productSupplyRepository.findByProduct(produtoNovo);
+                for(ProductSupply productSupply:productSupplies){
+                    Supply supply = productSupply.getSupply();
+                    supplyDTOs.add(new SupplyDTO(
+                        supply.getDescription(), 
+                        1, 
+                        supply.getMaxQuantity(), 
+                        supply.getMinQuantity(), 
+                        supply.getName(), 
+                        supply.getQuantity()));
+                }
                 
-                return ResponseEntity.ok(produtoNovo);
-                // return ResponseEntity.ok(new ProductTableDTO(
-                //     produtoNovo.getProduct_id(),
-                //     produtoNovo.getProduct_name(),
-                //     produtoNovo.getProduct_value(),
-                //     produtoNovo.getImagemUrl(), // Nome da imagem
-                //     produtoNovo.getDescription()
-                // ));
+                return ResponseEntity.ok(new ProductTableDTO(
+                    produtoNovo.getProduct_id(),
+                    produtoNovo.getProduct_name(),
+                    produtoNovo.getProduct_value(),
+                    produtoNovo.getImagemUrl(), // Nome da imagem
+                    produtoNovo.getDescription(),
+                    supplyDTOs
+                ));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Este Produto não existe");
             }

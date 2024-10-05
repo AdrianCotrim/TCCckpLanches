@@ -9,7 +9,6 @@ import com.fiec.ckplanches.model.supply.Supply;
 public record ProductCreateDTO(
     String productName,
     Double productValue,
-    MultipartFile imagem, // Arquivo da imagem
     String description,
     List<Supply> supplies 
 ) {
