@@ -36,4 +36,22 @@ public class ProductOrder {
     private int quantidade;
     private double preco;
     private String observacao;
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+        calculatePreco(); // Chama o método para calcular o preço
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+        calculatePreco(); // Chama o método para calcular o preço
+    }
+
+    private void calculatePreco() {
+        if (product != null) {
+            this.preco = product.getProduct_value() * this.quantidade; // Assume que getPrice() retorna o preço do produto
+        } else {
+            this.preco = 0; // Se o produto não estiver definido, o preço é 0
+        }
+    }
 }

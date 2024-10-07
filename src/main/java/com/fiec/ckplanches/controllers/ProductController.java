@@ -55,7 +55,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    private final String pastaImagens = "C:\\Users\\Eder\\Desktop\\TCCckpLanches\\src\\main\\resources\\ProductImages";
+    private final String pastaImagens = "C:\\Users\\37203\\Desktop\\TCCckpLanches\\src\\main\\resources\\ProductImages";
 
     @GetMapping
     public List<ProductTableDTO> listarProdutos() throws IOException {
