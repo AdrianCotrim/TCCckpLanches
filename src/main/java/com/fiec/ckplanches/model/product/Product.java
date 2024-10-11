@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fiec.ckplanches.model.enums.Category;
 import com.fiec.ckplanches.model.productOrder.ProductOrder;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
 import com.fiec.ckplanches.repositories.ProductSupplyRepository;
@@ -11,6 +12,8 @@ import com.fiec.ckplanches.repositories.ProductSupplyRepository;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,6 +49,10 @@ public class Product {
 
     @Column(name = "descricao")
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "categoria")
+    private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductOrder> productOrders;

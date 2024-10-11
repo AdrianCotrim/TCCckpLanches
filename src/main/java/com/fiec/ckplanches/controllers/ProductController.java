@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,8 @@ import com.fiec.ckplanches.DTO.ProductCreateDTO;
 import com.fiec.ckplanches.DTO.ProductDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
 import com.fiec.ckplanches.DTO.SupplyDTO;
+import com.fiec.ckplanches.DTO.SupplyTableDTO;
+import com.fiec.ckplanches.model.enums.Category;
 import com.fiec.ckplanches.model.product.Product;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
 import com.fiec.ckplanches.model.supply.Supply;
@@ -38,6 +41,8 @@ import com.fiec.ckplanches.repositories.ProductOrderRepository;
 import com.fiec.ckplanches.repositories.ProductRepository;
 import com.fiec.ckplanches.repositories.ProductSupplyRepository;
 import com.fiec.ckplanches.services.ProductService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/produtos")
@@ -55,7 +60,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    private final String pastaImagens = "C:\\Users\\37203\\Desktop\\TCCckpLanches\\src\\main\\resources\\ProductImages";
+    private final Path pastaImagens = Paths.get(System.getProperty("user.home"), "TCCckpLanches", "src", "main", "resources", "ProductImages");
 
     @GetMapping
     public List<ProductTableDTO> listarProdutos() throws IOException {
@@ -64,17 +69,19 @@ public class ProductController {
 
         for (Product element : products) {
             String caminhoImagem = element.getImagemUrl(); // Apenas o nome da imagem
-            List<SupplyDTO> supplyDTOs = new ArrayList<>();
+            List<SupplyTableDTO> supplyDTOs = new ArrayList<>();
             List<ProductSupply> productSupplies = productSupplyRepository.findByProduct(element);
             for(ProductSupply productSupply:productSupplies){
                 Supply supply = productSupply.getSupply();
-                supplyDTOs.add(new SupplyDTO(
-                    supply.getDescription(), 
-                    1, 
-                    supply.getMaxQuantity(), 
-                    supply.getMinQuantity(), 
+                supplyDTOs.add(new SupplyTableDTO(
+                    supply.getId(),
                     supply.getName(), 
-                    supply.getQuantity()));
+                    supply.getDescription(),
+                    supply.getQuantity(), 
+                    supply.getMinQuantity(), 
+                    supply.getMaxQuantity(),
+                    supply.getLots()
+                    ));
             }
             productDTOs.add(new ProductTableDTO(
                 element.getProduct_id(),
@@ -100,7 +107,7 @@ public class ProductController {
     public ResponseEntity<?> editarProduto(@RequestBody ProductDTO produto, @PathVariable Integer id) {
         try {
             Optional<Product> produtoExistente = dao.findById(id);
-            List<SupplyDTO> supplyDTOs = new ArrayList<>();
+            List<SupplyTableDTO> supplyDTOs = new ArrayList<>();
             if (produtoExistente.isPresent()) {
                 Product produtoNovo = produtoExistente.get();
                 produtoNovo.setProduct_name(produto.product_name());
@@ -110,13 +117,14 @@ public class ProductController {
                 List<ProductSupply> productSupplies = productSupplyRepository.findByProduct(produtoNovo);
                 for(ProductSupply productSupply:productSupplies){
                     Supply supply = productSupply.getSupply();
-                    supplyDTOs.add(new SupplyDTO(
-                        supply.getDescription(), 
-                        1, 
-                        supply.getMaxQuantity(), 
-                        supply.getMinQuantity(), 
+                    supplyDTOs.add(new SupplyTableDTO(
+                        supply.getId(),
                         supply.getName(), 
-                        supply.getQuantity()));
+                        supply.getDescription(),
+                        supply.getQuantity(), 
+                        supply.getMinQuantity(), 
+                        supply.getMaxQuantity(),
+                        supply.getLots()));
                 }
                 
                 return ResponseEntity.ok(new ProductTableDTO(
@@ -148,7 +156,7 @@ public class ProductController {
 
     @GetMapping("/imagens/{nomeImagem}")
     public ResponseEntity<Resource> pegarImagem(@PathVariable String nomeImagem) throws IOException {
-        Path caminhoImagem = Paths.get(pastaImagens, nomeImagem);
+        Path caminhoImagem = pastaImagens.resolve(nomeImagem);
 
         if (Files.exists(caminhoImagem)) {
             Resource resource = new UrlResource(caminhoImagem.toUri());
@@ -159,4 +167,10 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/categorias")
+    public List<Category> getMethodName() {
+        return Arrays.asList(Category.values());
+    }
+    
 }

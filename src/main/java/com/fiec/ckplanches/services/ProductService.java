@@ -21,7 +21,7 @@ import com.fiec.ckplanches.repositories.ProductSupplyRepository;
 @Service
 public class ProductService {
 
-    private final String pastaImagens = "C:\\Users\\37203\\Desktop\\TCCckpLanches\\src\\main\\resources\\ProductImages";
+    private final Path pastaImagens = Paths.get(System.getProperty("user.home"), "TCCckpLanches", "src", "main", "resources", "ProductImages");
 
     @Autowired
     private ProductRepository productRepository;
@@ -31,7 +31,7 @@ public class ProductService {
 
      public String salvarImagem(MultipartFile file) throws IOException {
         String nomeImagem = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-        Path caminhoImagem = Paths.get(pastaImagens, nomeImagem);
+        Path caminhoImagem = pastaImagens.resolve(nomeImagem);
         Files.copy(file.getInputStream(), caminhoImagem, StandardCopyOption.REPLACE_EXISTING);
         return nomeImagem;  // Retorna o nome ou caminho da imagem
     }
@@ -50,7 +50,7 @@ public class ProductService {
         
         // Salva a nova imagem no mesmo local
         String nomeNovaImagem = produto.getImagemUrl();  // Mantém o mesmo nome de arquivo
-        Path caminhoNovo = Paths.get(pastaImagens, nomeNovaImagem);
+        Path caminhoNovo = pastaImagens.resolve(nomeNovaImagem);
         Files.copy(novaImagem.getInputStream(), caminhoNovo, StandardCopyOption.REPLACE_EXISTING);
         
         return nomeNovaImagem;  // Retorna o nome da nova imagem (que é o mesmo)
@@ -65,6 +65,7 @@ public class ProductService {
         produtoNovo.setProduct_name(produtoDTO.productName());
         produtoNovo.setProduct_value(produtoDTO.productValue());
         produtoNovo.setDescription(produtoDTO.description());
+        produtoNovo.setCategory(produtoDTO.category());
         
         //Vincular os insumos ao produto
         //...

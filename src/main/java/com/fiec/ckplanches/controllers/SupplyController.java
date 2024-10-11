@@ -50,7 +50,8 @@ public class SupplyController {
                 element.getDescription(),
                 element.getQuantity(),
                 element.getMinQuantity(),
-                element.getMaxQuantity()
+                element.getMaxQuantity(),
+                element.getLots()
             );
             supplyDTOs.add(supplyDTO);
         }
@@ -66,16 +67,18 @@ public class SupplyController {
             Supply insumoNovo = new Supply();
             insumoNovo.setName(insumo.name());
             insumoNovo.setDescription(insumo.description());
-            insumoNovo.setQuantity(insumo.quantity());
             insumoNovo.setMinQuantity(insumo.minQuantity());
             insumoNovo.setMaxQuantity(insumo.maxQuantity());
             dao.save(insumoNovo);
-            return ResponseEntity.ok(Map.of("result", new SupplyTableDTO(insumoNovo.getId(), 
-            insumoNovo.getName(), 
-            insumoNovo.getDescription(), 
-            insumoNovo.getQuantity(), 
-            insumoNovo.getMinQuantity(), 
-            insumoNovo.getMaxQuantity())));
+            return ResponseEntity.ok(Map.of("result", new SupplyTableDTO(
+            insumoNovo.getId(),
+            insumoNovo.getName(),
+            insumoNovo.getDescription(),
+            insumoNovo.getQuantity(),
+            insumoNovo.getMinQuantity(),
+            insumoNovo.getMaxQuantity(),
+            insumoNovo.getLots())
+            ));
         }
         catch(Exception erro){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro inesperado no servidor");
@@ -92,7 +95,6 @@ public class SupplyController {
                 insumoNovo = novoInsumo.get();
                 insumoNovo.setName(insumo.name());
                 insumoNovo.setDescription(insumo.description());
-                insumoNovo.setQuantity(insumo.quantity());
                 insumoNovo.setMinQuantity(insumo.minQuantity());
                 insumoNovo.setMaxQuantity(insumo.maxQuantity());
                 insumoNovo = dao.save(insumoNovo);
@@ -106,7 +108,9 @@ public class SupplyController {
             insumoNovo.getDescription(), 
             insumoNovo.getQuantity(), 
             insumoNovo.getMinQuantity(), 
-            insumoNovo.getMaxQuantity())));
+            insumoNovo.getMaxQuantity(),
+            insumoNovo.getLots()
+            )));
         }
         catch(Exception erro){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro inesperado no servidor");
