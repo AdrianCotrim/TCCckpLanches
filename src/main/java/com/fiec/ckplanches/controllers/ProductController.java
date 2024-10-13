@@ -52,9 +52,6 @@ public class ProductController {
     private ProductRepository dao;
 
     @Autowired
-    private ProductOrderRepository productOrderRepository;
-
-    @Autowired
     private ProductSupplyRepository productSupplyRepository;
     
     @Autowired
