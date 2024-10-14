@@ -62,7 +62,7 @@ public class ProductService {
 
         // Cria o novo produto
         Product produtoNovo = new Product();
-        produtoNovo.setProduct_name(produtoDTO.productName());
+        produtoNovo.setProductName(produtoDTO.productName());
         produtoNovo.setProduct_value(produtoDTO.productValue());
         produtoNovo.setDescription(produtoDTO.description());
         produtoNovo.setCategory(produtoDTO.category());

@@ -82,7 +82,7 @@ public class ProductController {
             }
             productDTOs.add(new ProductTableDTO(
                 element.getProduct_id(),
-                element.getProduct_name(),
+                element.getProductName(),
                 element.getProduct_value(),
                 caminhoImagem, // Não incluir o caminho completo
                 element.getDescription(),
@@ -107,7 +107,7 @@ public class ProductController {
             List<SupplyTableDTO> supplyDTOs = new ArrayList<>();
             if (produtoExistente.isPresent()) {
                 Product produtoNovo = produtoExistente.get();
-                produtoNovo.setProduct_name(produto.product_name());
+                produtoNovo.setProductName(produto.product_name());
                 produtoNovo.setProduct_value(produto.product_value());
                 produtoNovo = dao.save(produtoNovo);
 
@@ -126,7 +126,7 @@ public class ProductController {
                 
                 return ResponseEntity.ok(new ProductTableDTO(
                     produtoNovo.getProduct_id(),
-                    produtoNovo.getProduct_name(),
+                    produtoNovo.getProductName(),
                     produtoNovo.getProduct_value(),
                     produtoNovo.getImagemUrl(), // Nome da imagem
                     produtoNovo.getDescription(),

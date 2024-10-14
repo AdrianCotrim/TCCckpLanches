@@ -23,9 +23,11 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "pedido")
@@ -53,7 +55,6 @@ public class Order {
     @Column(name = "forma_pagamento", nullable = false, length = 50)
     private String paymentMethod;
 
-    @Column(name = "valor_total", nullable = false)
     private Double totalValue;
 
     @Column(name = "data_hora_saida", nullable = false)
@@ -66,4 +67,5 @@ public class Order {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_id", referencedColumnName = "deliveryId", nullable = true)
     private Delivery delivery;
+
 }

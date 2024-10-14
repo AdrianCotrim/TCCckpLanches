@@ -27,23 +27,23 @@ public class Delivery {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "deliveryId", nullable=false)
+    @Column(name = "deliveryId")
     private Integer deliveryId;
 
-    @Column(name = "motoboy", nullable = false)
+    @Column(name = "motoboy")
     private String motoboy;
 
-    @Column(name="endereco", nullable = false)
+    @Column(name="endereco")
     private String address;
 
-    @Column(name = "complemento", nullable = true)
+    @Column(name = "complemento")
     private String complement;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "TrocoSimNao", nullable = false)
+    @Column(name = "TrocoSimNao")
     private Change change;
     
-    @Column(name = "taxaEntrega", nullable = false)
+    @Column(name = "taxaEntrega")
     private Double fee;
 
     @OneToOne(mappedBy="delivery")

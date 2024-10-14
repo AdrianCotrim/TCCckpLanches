@@ -38,8 +38,8 @@ public class Product {
     @Column(name = "pk_produto")
     private Integer product_id;
 
-    @Column(name = "nome_produto")
-    private String product_name;
+    @Column(name = "nome_produto", unique = true)
+    private String productName;
 
     @Column(name = "valor_produto")
     private Double product_value;
