@@ -7,18 +7,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fiec.ckplanches.DTO.DeliveryDTO;
-import com.fiec.ckplanches.DTO.OrderDTO;
 import com.fiec.ckplanches.DTO.OrderRequestDTO;
 import com.fiec.ckplanches.DTO.OrderTableDTO;
+import com.fiec.ckplanches.DTO.OrderUpdateDTO;
 import com.fiec.ckplanches.model.order.Order;
 import com.fiec.ckplanches.repositories.OrderRepository;
 import com.fiec.ckplanches.services.OrderService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 @RestController
@@ -47,6 +47,17 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.CREATED).body(createOrder); // Retorne a ResponseEntity
         } catch (Exception e) {
             // Log da exceção pode ser útil para depuração
+            System.err.println("Erro ao criar o pedido: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<?> atualizarPedido(@RequestBody OrderUpdateDTO orderUpdateDTO) {
+        try{
+            OrderTableDTO updateOrder = orderService.atualizarPedido(orderUpdateDTO);
+            return ResponseEntity.ok(updateOrder);
+        } catch(Exception e){
             System.err.println("Erro ao criar o pedido: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

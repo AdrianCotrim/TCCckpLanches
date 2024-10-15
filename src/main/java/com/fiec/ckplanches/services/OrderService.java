@@ -12,6 +12,7 @@ import com.fiec.ckplanches.DTO.OrderDTO;
 import com.fiec.ckplanches.DTO.OrderProductDTO;
 import com.fiec.ckplanches.DTO.OrderProductTableDTO;
 import com.fiec.ckplanches.DTO.OrderTableDTO;
+import com.fiec.ckplanches.DTO.OrderUpdateDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
 import com.fiec.ckplanches.DTO.SupplyTableDTO;
 import com.fiec.ckplanches.model.delivery.Delivery;
@@ -20,6 +21,7 @@ import com.fiec.ckplanches.model.product.Product;
 import com.fiec.ckplanches.model.productOrder.ProductOrder;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
 import com.fiec.ckplanches.model.supply.Supply;
+import com.fiec.ckplanches.repositories.DeliveryRepository;
 import com.fiec.ckplanches.repositories.OrderRepository;
 import com.fiec.ckplanches.repositories.ProductOrderRepository;
 import com.fiec.ckplanches.repositories.ProductRepository;
@@ -32,12 +34,15 @@ public class OrderService {
     private final ProductSupplyRepository productSupplyRepository;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final DeliveryRepository deliveryRepository;
 
-    public OrderService(ProductOrderRepository productOrderRepository, ProductSupplyRepository productSupplyRepository, OrderRepository orderRepository, ProductRepository productRepository){
+    public OrderService(ProductOrderRepository productOrderRepository, ProductSupplyRepository productSupplyRepository, OrderRepository orderRepository, ProductRepository productRepository,
+    DeliveryRepository deliveryRepository){
         this.productOrderRepository = productOrderRepository;
         this.productSupplyRepository = productSupplyRepository;
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
+        this.deliveryRepository = deliveryRepository;
     }
     
     public List<OrderTableDTO> listarPedidos(List<Order> orders){
@@ -64,9 +69,21 @@ public class OrderService {
         if(deliveryDTO != null) delivery = modificarDelivery(new Delivery(), deliveryDTO);
         Order order = modificarOrder(new Order(), orderDTO, delivery);
         order = orderRepository.save(order);
-        criarProductOrder(order, orderDTO);
+        criarProductOrder(order, orderDTO.orderProductDTOs());
         order.setTotalValue(calcularValorTotal(order.getProductOrders()));
         order = orderRepository.save(order);
+        return convertOrderToTableDTO(orderRepository.findById(order.getOrderId()).orElse(order));
+    }
+
+    public OrderTableDTO atualizarPedido(OrderUpdateDTO orderDTO){
+        Order order = orderRepository.findById(orderDTO.id()).orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado"));
+        if(order != null){
+            modificarOrder(order, orderDTO);
+            order.setTotalValue(calcularValorTotal(order.getProductOrders()));
+            Delivery delivery = modificarDelivery(order.getDelivery(), orderDTO.deliveryDTO());
+            deliveryRepository.save(delivery);
+            order = orderRepository.save(order);
+        }
         return convertOrderToTableDTO(orderRepository.findById(order.getOrderId()).orElse(order));
     }
 
@@ -128,35 +145,84 @@ public class OrderService {
     }
 
     public Order modificarOrder(Order order, OrderDTO orderDTO, Delivery delivery){
-        order.setOrderStatus(orderDTO.orderStatus());
-        order.setCustomerName(orderDTO.customerName());
-        order.setExitMethod(orderDTO.exitMethod());
-        order.setPaymentMethod(orderDTO.paymentMethod());
-        if(delivery != null)order.setDelivery(delivery);
-        order.setExitDatetime(orderDTO.exitDateTime());
-        order.setEndDatetime(orderDTO.endDateTime());
+        if(orderDTO.orderStatus() != null) order.setOrderStatus(orderDTO.orderStatus());
+        if(orderDTO.customerName() != null) order.setCustomerName(orderDTO.customerName());
+        if(orderDTO.exitMethod() != null) order.setExitMethod(orderDTO.exitMethod());
+        if(orderDTO.paymentMethod() != null) order.setPaymentMethod(orderDTO.paymentMethod());
+        if(delivery != null) order.setDelivery(delivery);
+        if(orderDTO.exitDateTime() != null) order.setExitDatetime(orderDTO.exitDateTime());
+        if(orderDTO.endDateTime() != null) order.setEndDatetime(orderDTO.endDateTime());
         return order;
     }
 
-    public void criarProductOrder(Order order, OrderDTO orderDTO){
+    public Order modificarOrder(Order order, OrderUpdateDTO orderUpdateDTO){
+        if(orderUpdateDTO.orderStatus() != null)order.setOrderStatus(orderUpdateDTO.orderStatus());
+        if(orderUpdateDTO.customerName() != null)order.setCustomerName(orderUpdateDTO.customerName());
+        if(orderUpdateDTO.exitMethod() != null)order.setExitMethod(orderUpdateDTO.exitMethod());
+        if(orderUpdateDTO.paymentMethod() != null)order.setPaymentMethod(orderUpdateDTO.paymentMethod());
+        removeProductOrders(order);
+        criarProductOrder(order, orderUpdateDTO.orderProductDTOs());
+        return order;
+    }
+
+    public ProductOrder convertOrderProductDTOtoProductOrder(OrderProductDTO orderProductDTO, Order order){
+        ProductOrder productOrder = new ProductOrder();
+        Product product = Optional.ofNullable(productRepository.findByProductName(orderProductDTO.productName()))
+                    .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
+        productOrder.setObservacao(orderProductDTO.observacao());
+        productOrder.setOrder(order);
+        productOrder.setProduct(product);
+        productOrder.setQuantidade(orderProductDTO.quantity());
+        return productOrder;
+    }
+
+    public void removeProductOrders(Order order) {
+        // Inicializa a lista de ProductOrders, se ainda não estiver inicializada
         List<ProductOrder> productOrders = order.getProductOrders();
+        
+        // Copia a lista para evitar ConcurrentModificationException
+        List<ProductOrder> ordersToRemove = new ArrayList<>(productOrders);
     
-        for(OrderProductDTO orderProductDTO : orderDTO.orderProductDTOs()){
-            ProductOrder productOrder = new ProductOrder();
-            Product product = Optional.ofNullable(productRepository.findByProductName(orderProductDTO.productName()))
-                        .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
-            productOrder.setObservacao(orderProductDTO.observacao());
-            productOrder.setOrder(order);
-            productOrder.setProduct(product);
-            productOrder.setQuantidade(orderProductDTO.quantity());
-            
-            productOrders.add(productOrder);  // Adiciona o ProductOrder à lista
-            productOrderRepository.save(productOrder);
+        for (ProductOrder productOrder : ordersToRemove) {
+            if (productOrderRepository.existsById(productOrder.getId())) {
+                productOrderRepository.deleteById(productOrder.getId());
+            }
         }
     
-        // Atualizando a lista de ProductOrders na ordem
-        order.setProductOrders(productOrders);
+        // Limpa a lista de ProductOrders após a remoção
+        productOrders.clear();
     }
+    
+    public void criarProductOrder(Order order, List<OrderProductDTO> orderProductDTOs) {
+        
+        // Se não houver ProductOrders, inicialize a lista
+        if (order.getProductOrders() == null) {
+            order.setProductOrders(new ArrayList<>());
+        }
+    
+        List<ProductOrder> productOrders = order.getProductOrders();
+    
+        for (OrderProductDTO orderProductDTO : orderProductDTOs) {
+            Product product = productRepository.findByProductName(orderProductDTO.productName());
+    
+            // Verifica se o ProductOrder já existe para a ordem e produto
+            ProductOrder productOrder = productOrderRepository.findByProductAndOrder(product, order);
+    
+            if (productOrder != null) {
+                // Atualiza o ProductOrder existente
+                productOrder.setObservacao(orderProductDTO.observacao());
+                productOrder.setQuantidade(orderProductDTO.quantity());
+                productOrderRepository.save(productOrder);
+            } else {
+                // Cria um novo ProductOrder
+                ProductOrder productOrderNew = convertOrderProductDTOtoProductOrder(orderProductDTO, order);
+                productOrders.add(productOrderNew);  // Adiciona o ProductOrder à lista
+                productOrderRepository.save(productOrderNew);
+            }
+        }
+    }
+    
+    
 
     public Double calcularValorTotal(List<ProductOrder> productOrders){
         //System.out.println(productOrders.size());
