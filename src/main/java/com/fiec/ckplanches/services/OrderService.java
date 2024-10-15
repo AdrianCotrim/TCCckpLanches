@@ -7,8 +7,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.fiec.ckplanches.DTO.DeliveryDTO;
+import com.fiec.ckplanches.DTO.DeliveryTableDTO;
 import com.fiec.ckplanches.DTO.OrderDTO;
 import com.fiec.ckplanches.DTO.OrderProductDTO;
+import com.fiec.ckplanches.DTO.OrderProductTableDTO;
 import com.fiec.ckplanches.DTO.OrderTableDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
 import com.fiec.ckplanches.DTO.SupplyTableDTO;
@@ -63,6 +65,8 @@ public class OrderService {
         Order order = modificarOrder(new Order(), orderDTO, delivery);
         order = orderRepository.save(order);
         criarProductOrder(order, orderDTO);
+        order.setTotalValue(calcularValorTotal(order.getProductOrders()));
+        order = orderRepository.save(order);
         return convertOrderToTableDTO(orderRepository.findById(order.getOrderId()).orElse(order));
     }
 
@@ -93,17 +97,24 @@ public class OrderService {
     // Order
 
     public OrderTableDTO convertOrderToTableDTO(Order order){
-        List<ProductTableDTO> productDTOs = new ArrayList<>();
+        List<OrderProductTableDTO> orderProductTableDTOs = new ArrayList<>();
         double totalValue = 0;
         List<ProductOrder> productOrders = productOrderRepository.findByOrder(order);
             
         for(ProductOrder productOrder : productOrders) {
                 Product product = productOrder.getProduct(); 
-                productDTOs.add(convertProductToTableDTO(product));
+                OrderProductTableDTO orderProductTableDTO = new OrderProductTableDTO(
+                    convertProductToTableDTO(product), 
+                    productOrder.getQuantidade(), 
+                    productOrder.getPreco(), 
+                    productOrder.getObservacao());
+                orderProductTableDTOs.add(orderProductTableDTO);
                 totalValue += productOrder.getPreco();
         }
 
         order.setTotalValue(totalValue);
+
+        
 
         return new OrderTableDTO(
             order.getOrderId(),
@@ -112,7 +123,8 @@ public class OrderService {
             order.getExitMethod(),
             order.getPaymentMethod(),
             order.getTotalValue(),
-            productDTOs);
+            orderProductTableDTOs,
+            convertDeliveryToTableDTO(order.getDelivery()));
     }
 
     public Order modificarOrder(Order order, OrderDTO orderDTO, Delivery delivery){
@@ -127,22 +139,29 @@ public class OrderService {
     }
 
     public void criarProductOrder(Order order, OrderDTO orderDTO){
-        for(OrderProductDTO orderProductDTO:orderDTO.orderProductDTOs()){
+        List<ProductOrder> productOrders = order.getProductOrders();
+    
+        for(OrderProductDTO orderProductDTO : orderDTO.orderProductDTOs()){
             ProductOrder productOrder = new ProductOrder();
             Product product = Optional.ofNullable(productRepository.findByProductName(orderProductDTO.productName()))
-                          .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
+                        .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
             productOrder.setObservacao(orderProductDTO.observacao());
             productOrder.setOrder(order);
             productOrder.setProduct(product);
             productOrder.setQuantidade(orderProductDTO.quantity());
+            
+            productOrders.add(productOrder);  // Adiciona o ProductOrder à lista
             productOrderRepository.save(productOrder);
         }
-        order.setTotalValue(calcularValorTotal(orderRepository.findById(order.getOrderId()).orElse(order).getProductOrders()));
+    
+        // Atualizando a lista de ProductOrders na ordem
+        order.setProductOrders(productOrders);
     }
 
     public Double calcularValorTotal(List<ProductOrder> productOrders){
+        //System.out.println(productOrders.size());
         double totalValue = 0;
-        if(productOrders != null)
+        //if(productOrders != null)
         for(ProductOrder productOrder : productOrders) {
                 totalValue += productOrder.getPreco();
         }
@@ -171,6 +190,16 @@ public class OrderService {
         delivery.setChange(deliveryDTO.change());
         delivery.setFee(deliveryDTO.fee());
         return delivery;
+    }
+
+    public DeliveryTableDTO convertDeliveryToTableDTO(Delivery delivery){
+        return new DeliveryTableDTO(
+        delivery.getDeliveryId(),
+        delivery.getMotoboy(), 
+        delivery.getAddress(), 
+        delivery.getComplement(), 
+        delivery.getChange(), 
+        delivery.getFee());
     }
 
 }

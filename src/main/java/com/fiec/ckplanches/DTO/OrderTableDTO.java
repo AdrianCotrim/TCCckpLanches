@@ -12,5 +12,7 @@ public record OrderTableDTO(Integer orderId,
     ExitMethod exitMethod,
     String paymentMethod,
     Double totalValue,
-    List<ProductTableDTO> products) {}
+    List<OrderProductTableDTO> orderProductTableDTOs,
+    DeliveryTableDTO deliveryDTO
+    ) {}
 

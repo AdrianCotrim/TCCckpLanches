@@ -2,6 +2,7 @@ package com.fiec.ckplanches.model.order;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fiec.ckplanches.model.delivery.Delivery;
 import com.fiec.ckplanches.model.enums.ExitMethod;
@@ -39,7 +40,7 @@ public class Order {
     private Integer orderId;
 
     @OneToMany(mappedBy = "order")
-    private List<ProductOrder> productOrders;
+    private List<ProductOrder> productOrders = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado_pedido", nullable = false, length = 10)
