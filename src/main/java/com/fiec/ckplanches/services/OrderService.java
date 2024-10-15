@@ -49,14 +49,6 @@ public class OrderService {
         List<OrderTableDTO> orderDTOs = new ArrayList<>();
 
         for (Order element: orders) {
-            List<ProductTableDTO> productDTOs = new ArrayList<>();
-            List<ProductOrder> productOrders = productOrderRepository.findByOrder(element);
-            
-     
-            for (ProductOrder productOrder : productOrders) {
-                Product product = productOrder.getProduct(); 
-                productDTOs.add(convertProductToTableDTO(product));
-            }
 
             orderDTOs.add(convertOrderToTableDTO(element));
 
@@ -80,11 +72,16 @@ public class OrderService {
         if(order != null){
             modificarOrder(order, orderDTO);
             order.setTotalValue(calcularValorTotal(order.getProductOrders()));
-            Delivery delivery = modificarDelivery(order.getDelivery(), orderDTO.deliveryDTO());
+            Delivery delivery = order.getDelivery();
+            if(delivery != null) {
+                delivery = modificarDelivery(order.getDelivery(), orderDTO.deliveryDTO());
+            }
+            else delivery = modificarDelivery(new Delivery(), orderDTO.deliveryDTO());
             deliveryRepository.save(delivery);
+            order.setDelivery(delivery);
             order = orderRepository.save(order);
         }
-        return convertOrderToTableDTO(orderRepository.findById(order.getOrderId()).orElse(order));
+        return convertOrderToTableDTO(order);
     }
 
 
@@ -141,7 +138,8 @@ public class OrderService {
             order.getPaymentMethod(),
             order.getTotalValue(),
             orderProductTableDTOs,
-            convertDeliveryToTableDTO(order.getDelivery()));
+            order.getDelivery() != null ? convertDeliveryToTableDTO(order.getDelivery()) : null
+            );
     }
 
     public Order modificarOrder(Order order, OrderDTO orderDTO, Delivery delivery){
