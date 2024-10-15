@@ -137,12 +137,12 @@ public class OrderService {
             productOrder.setQuantidade(orderProductDTO.quantity());
             productOrderRepository.save(productOrder);
         }
-        order.setTotalValue(calcularValorTotal(order.getProductOrders()));
+        order.setTotalValue(calcularValorTotal(orderRepository.findById(order.getOrderId()).orElse(order).getProductOrders()));
     }
 
     public Double calcularValorTotal(List<ProductOrder> productOrders){
         double totalValue = 0;
-            
+        if(productOrders != null)
         for(ProductOrder productOrder : productOrders) {
                 totalValue += productOrder.getPreco();
         }
