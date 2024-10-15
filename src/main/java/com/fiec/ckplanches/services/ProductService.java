@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fiec.ckplanches.DTO.ProductCreateDTO;
 import com.fiec.ckplanches.model.product.Product;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
+import com.fiec.ckplanches.model.supply.Supply;
 import com.fiec.ckplanches.repositories.ProductRepository;
 import com.fiec.ckplanches.repositories.ProductSupplyRepository;
+import com.fiec.ckplanches.repositories.SupplyRepository;
 
 @Service
 public class ProductService {
@@ -28,6 +31,9 @@ public class ProductService {
 
     @Autowired
     private ProductSupplyRepository productSupplyRepository;
+
+    @Autowired
+    private SupplyRepository supplyRepository;
 
      public String salvarImagem(MultipartFile file) throws IOException {
         String nomeImagem = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
@@ -68,7 +74,12 @@ public class ProductService {
         produtoNovo.setCategory(produtoDTO.category());
         
         //Vincular os insumos ao produto
-        //...
+        for(int id:produtoDTO.idSupllies()){
+            Optional<Supply> supplyOptional = supplyRepository.findById(id);
+            if(supplyOptional.isPresent()){
+                criarProductSupply(produtoNovo, supplyOptional.get());
+            }
+        }
 
         produtoNovo.setImagemUrl(nomeImagem); // Define a URL da imagem
 
@@ -97,6 +108,13 @@ public class ProductService {
 
             // Após remover os supplies, exclui o produto
             productRepository.delete(product);
+        }
+
+        public void criarProductSupply(Product product, Supply supply){
+            ProductSupply productSupply = new ProductSupply();
+            productSupply.setProduct(product);
+            productSupply.setSupply(supply);
+            productSupplyRepository.save(productSupply); 
         }
 
     
