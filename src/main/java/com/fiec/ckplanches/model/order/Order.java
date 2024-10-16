@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import com.fiec.ckplanches.model.delivery.Delivery;
 import com.fiec.ckplanches.model.enums.ExitMethod;
 import com.fiec.ckplanches.model.enums.OrderStatus;
+import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.productOrder.ProductOrder;
 
 import jakarta.persistence.CascadeType;
@@ -63,6 +64,10 @@ public class Order {
 
     @Column(name = "data_hora_finalizacao", nullable = false)
     private LocalDateTime endDatetime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 
     // Relacionamento OneToOne para a entrega
     @OneToOne(cascade = CascadeType.ALL)

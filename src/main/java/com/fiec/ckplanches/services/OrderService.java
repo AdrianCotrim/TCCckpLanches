@@ -16,6 +16,7 @@ import com.fiec.ckplanches.DTO.OrderUpdateDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
 import com.fiec.ckplanches.DTO.SupplyTableDTO;
 import com.fiec.ckplanches.model.delivery.Delivery;
+import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.order.Order;
 import com.fiec.ckplanches.model.product.Product;
 import com.fiec.ckplanches.model.productOrder.ProductOrder;
@@ -49,7 +50,6 @@ public class OrderService {
         List<OrderTableDTO> orderDTOs = new ArrayList<>();
 
         for (Order element: orders) {
-
             orderDTOs.add(convertOrderToTableDTO(element));
 
         }
@@ -62,6 +62,7 @@ public class OrderService {
         Order order = modificarOrder(new Order(), orderDTO, delivery);
         order = orderRepository.save(order);
         criarProductOrder(order, orderDTO.orderProductDTOs());
+        order.setStatus(Status.ATIVO);
         order.setTotalValue(calcularValorTotal(order.getProductOrders()));
         order = orderRepository.save(order);
         return convertOrderToTableDTO(orderRepository.findById(order.getOrderId()).orElse(order));
@@ -82,6 +83,17 @@ public class OrderService {
             order = orderRepository.save(order);
         }
         return convertOrderToTableDTO(order);
+    }
+
+    public boolean deletarPedido(int id){
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if(orderOptional.isPresent()){
+            Order order = orderOptional.get();
+            order.setStatus(Status.INATIVO);
+            orderRepository.save(order);
+            return true;
+        }
+        return false;
     }
 
 
@@ -112,7 +124,7 @@ public class OrderService {
 
     public OrderTableDTO convertOrderToTableDTO(Order order){
         List<OrderProductTableDTO> orderProductTableDTOs = new ArrayList<>();
-        double totalValue = 0;
+        //double totalValue = 0;
         List<ProductOrder> productOrders = productOrderRepository.findByOrder(order);
             
         for(ProductOrder productOrder : productOrders) {
@@ -123,10 +135,10 @@ public class OrderService {
                     productOrder.getPreco(), 
                     productOrder.getObservacao());
                 orderProductTableDTOs.add(orderProductTableDTO);
-                totalValue += productOrder.getPreco();
+                //totalValue += productOrder.getPreco();
         }
 
-        order.setTotalValue(totalValue);
+        //order.setTotalValue(totalValue);
 
         
 
