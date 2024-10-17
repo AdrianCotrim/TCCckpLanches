@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fiec.ckplanches.DTO.ValuesDTO;
+import com.fiec.ckplanches.model.movement.Movement;
 import com.fiec.ckplanches.model.order.Order;
-import com.fiec.ckplanches.model.purchase.Purchase;
+import com.fiec.ckplanches.repositories.MovementRepository;
 import com.fiec.ckplanches.repositories.OrderRepository;
-import com.fiec.ckplanches.repositories.PurchaseRepository;
 
 
 
@@ -25,7 +25,7 @@ import com.fiec.ckplanches.repositories.PurchaseRepository;
 @RequestMapping("/tela-inicial")
 public class DashboardController {
     @Autowired
-    private PurchaseRepository purchaseRepository;
+    private MovementRepository purchaseRepository;
     @Autowired
     private OrderRepository orderRepository;
 
@@ -37,7 +37,7 @@ public class DashboardController {
             LocalDateTime startDate = endDate.minusDays(LocalDateTime.now().getDayOfWeek().getValue()+1);
 
             // Consultar o banco de dados
-            List<Purchase> purchases = purchaseRepository.findByPurchaseDateBetween(startDate, endDate);
+            List<Movement> purchases = purchaseRepository.findByMovementDateBetween(startDate, endDate);
             List<Order> orders = orderRepository.findByEndDatetimeBetween(startDate, endDate);
 
 
@@ -46,8 +46,8 @@ public class DashboardController {
             double[] earneds = new double[7]; // De domingo (0) a sábado (6)
 
             // Processar gastos
-            for (Purchase purchase : purchases) {
-                int dayOfWeekIndex = (purchase.getPurchaseDate().plusHours(3).getDayOfWeek().getValue() % 7);
+            for (Movement purchase : purchases) {
+                int dayOfWeekIndex = (purchase.getMovementDate().plusHours(3).getDayOfWeek().getValue() % 7);
                 if (dayOfWeekIndex < 0) dayOfWeekIndex = 6; // Ajustar para domingo como índice 0
                 spents[dayOfWeekIndex] += purchase.getValue();
             }
@@ -69,7 +69,6 @@ public class DashboardController {
             return ResponseEntity.ok(Map.of("values", valuesDTO));
 
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

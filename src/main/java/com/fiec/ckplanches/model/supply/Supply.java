@@ -3,8 +3,8 @@ package com.fiec.ckplanches.model.supply;
 import java.util.List;
 
 import com.fiec.ckplanches.model.lot.Lot;
+import com.fiec.ckplanches.model.movement.Movement;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
-import com.fiec.ckplanches.model.purchase.Purchase;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -48,7 +48,7 @@ public class Supply {
     private int maxQuantity;
 
     @ManyToMany(mappedBy = "supplies", cascade = CascadeType.ALL)
-    private List<Purchase> purchases;
+    private List<Movement> movements;
 
     @OneToMany(mappedBy = "supply", cascade = CascadeType.REMOVE)
     private List<ProductSupply> productSupplies;

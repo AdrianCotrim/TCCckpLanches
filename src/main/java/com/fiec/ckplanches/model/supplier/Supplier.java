@@ -2,7 +2,7 @@ package com.fiec.ckplanches.model.supplier;
 
 import java.util.List;
 
-import com.fiec.ckplanches.model.purchase.Purchase;
+import com.fiec.ckplanches.model.movement.Movement;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,12 +40,12 @@ public class Supplier {
     private String address;
 
     @OneToMany(mappedBy = "supplier")
-    private List<Purchase> purchases;
+    private List<Movement> movements;
 
     @PreRemove
 	public void UpdatePurchaseOnDelete() {
-		for (Purchase purchase : this.getPurchases()) {
-			purchase.setSupplier(null);
+		for (Movement movement : this.getMovements()) {
+			movement.setSupplier(null);
 		}
 	}
 }

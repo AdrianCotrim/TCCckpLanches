@@ -237,9 +237,10 @@ public class OrderService {
     public Double calcularValorTotal(List<ProductOrder> productOrders){
         //System.out.println(productOrders.size());
         double totalValue = 0;
-        //if(productOrders != null)
-        for(ProductOrder productOrder : productOrders) {
+        if(productOrders != null){
+            for(ProductOrder productOrder : productOrders) {
                 totalValue += productOrder.getPreco();
+            }
         }
         return totalValue;
     }
