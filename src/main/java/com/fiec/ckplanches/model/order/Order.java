@@ -71,7 +71,7 @@ public class Order {
 
     // Relacionamento OneToOne para a entrega
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "delivery_id", referencedColumnName = "deliveryId", nullable = true)
+    @JoinColumn(name = "fk_entrega", referencedColumnName = "pk_entrega", nullable = true)
     private Delivery delivery;
 
 }

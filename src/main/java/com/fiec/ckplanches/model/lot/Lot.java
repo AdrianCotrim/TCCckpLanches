@@ -28,13 +28,14 @@ public class Lot {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "pk_lote")
+    private Integer id;
 
     @Column(name = "data_validade", nullable = false)
     private Date expiration_date;
 
     @Column(name = "quantidade", nullable = false)
-    private int quantity;
+    private Integer quantity;
 
     @ManyToOne
     @JoinColumn(name = "fk_insumo", nullable = true)

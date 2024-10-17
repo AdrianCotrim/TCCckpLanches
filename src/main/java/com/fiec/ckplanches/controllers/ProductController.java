@@ -31,17 +31,14 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fiec.ckplanches.DTO.ProductCreateDTO;
 import com.fiec.ckplanches.DTO.ProductDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
-import com.fiec.ckplanches.DTO.SupplyDTO;
 import com.fiec.ckplanches.DTO.SupplyTableDTO;
 import com.fiec.ckplanches.model.enums.Category;
 import com.fiec.ckplanches.model.product.Product;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
 import com.fiec.ckplanches.model.supply.Supply;
-import com.fiec.ckplanches.repositories.ProductOrderRepository;
 import com.fiec.ckplanches.repositories.ProductRepository;
 import com.fiec.ckplanches.repositories.ProductSupplyRepository;
 import com.fiec.ckplanches.services.ProductService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController

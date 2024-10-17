@@ -30,11 +30,15 @@ import lombok.Setter;
 public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pk_compra")
     private int id;
+
     @Column(name = "data_compra", nullable = false)
     private LocalDateTime purchaseDate;
+
     @Column(name = "valor", nullable = false)
     private double value;
+    
     @Column(name = "quantidade", nullable = false)
     private int quantity;
 

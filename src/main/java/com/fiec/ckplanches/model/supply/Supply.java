@@ -29,6 +29,7 @@ import lombok.Setter;
 public class Supply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pk_insumo")
     private int id;
 
     @Column(name = "name", nullable = false, length=100)

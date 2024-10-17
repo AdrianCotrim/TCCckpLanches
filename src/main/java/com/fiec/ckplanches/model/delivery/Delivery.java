@@ -27,7 +27,7 @@ public class Delivery {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "deliveryId")
+    @Column(name = "pk_entrega")
     private Integer deliveryId;
 
     @Column(name = "motoboy")
