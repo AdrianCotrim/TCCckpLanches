@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +39,9 @@ public class SupplyController {
     @Autowired
     private LotRepository lotRepository;
 
+    @Autowired
+    private LogController logController;
+
     @GetMapping
     @Secured("ADMIN")
     public List<SupplyTableDTO> listarInsumos() {
@@ -62,14 +67,16 @@ public class SupplyController {
 
     @PostMapping
     @Secured("ADMIN")
-    public ResponseEntity<?> criarInsumo(@RequestBody SupplyDTO insumo) {
+    public ResponseEntity<?> criarInsumo(@RequestBody SupplyDTO insumo, @AuthenticationPrincipal UserDetails userDetails) {
         try{
             Supply insumoNovo = new Supply();
             insumoNovo.setName(insumo.name());
             insumoNovo.setDescription(insumo.description());
             insumoNovo.setMinQuantity(insumo.minQuantity());
             insumoNovo.setMaxQuantity(insumo.maxQuantity());
+            insumoNovo.setQuantity(insumo.quantity());
             dao.save(insumoNovo);
+            logController.logAction(userDetails.getUsername(), "Criou um insumo", insumoNovo.getId());
             return ResponseEntity.ok(Map.of("result", new SupplyTableDTO(
             insumoNovo.getId(),
             insumoNovo.getName(),
@@ -87,7 +94,7 @@ public class SupplyController {
 
     @PutMapping("/{id}")
     @Secured("ADMIN")
-    public ResponseEntity<?> editarInsumo(@RequestBody SupplyDTO insumo, @PathVariable Integer id) {
+    public ResponseEntity<?> editarInsumo(@RequestBody SupplyDTO insumo, @PathVariable Integer id, @AuthenticationPrincipal UserDetails userDetails) {
         try{
             Supply insumoNovo = null;
             Optional<Supply> novoInsumo = dao.findById(id);
@@ -98,6 +105,7 @@ public class SupplyController {
                 insumoNovo.setMinQuantity(insumo.minQuantity());
                 insumoNovo.setMaxQuantity(insumo.maxQuantity());
                 insumoNovo = dao.save(insumoNovo);
+                logController.logAction(userDetails.getUsername(), "Atualizou um insumo", insumoNovo.getId());
             }
             else{
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Este Insumo não existe");
@@ -119,9 +127,10 @@ public class SupplyController {
 
     @DeleteMapping("/{id}")
     @Secured("ADMIN")
-    public void deletarInsumo(@PathVariable Integer id) {
+    public void deletarInsumo(@PathVariable Integer id, @AuthenticationPrincipal UserDetails userDetails) {
         if (dao.existsById(id)) {
             dao.deleteById(id);
+            logController.logAction(userDetails.getUsername(), "Deletou um insumo", id);
         } else {
              throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Insumo não encontrado");
         }

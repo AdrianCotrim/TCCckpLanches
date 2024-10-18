@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +56,9 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private LogController logController;
+
     private final Path pastaImagens = Paths.get(System.getProperty("user.home"), "TCCckpLanches", "src", "main", "resources", "ProductImages");
 
     @GetMapping
@@ -91,14 +96,15 @@ public class ProductController {
 
     @PostMapping
     @Secured("ADMIN")
-    public ResponseEntity<?> criarProduto(@RequestPart ProductCreateDTO produtoDTO, @RequestPart("imagem") MultipartFile imagem) throws IOException {
+    public ResponseEntity<?> criarProduto(@RequestPart ProductCreateDTO produtoDTO, @RequestPart("imagem") MultipartFile imagem, @AuthenticationPrincipal UserDetails userDetails) throws IOException {
         Product produtoCriado = productService.criarProduto(produtoDTO, imagem);
+        logController.logAction(userDetails.getUsername(), "Criou um produto", produtoCriado.getProduct_id());
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
     }
 
     @PutMapping("/{id}")
     @Secured("ADMIN")
-    public ResponseEntity<?> editarProduto(@RequestBody ProductDTO produto, @PathVariable Integer id) {
+    public ResponseEntity<?> editarProduto(@RequestBody ProductDTO produto, @PathVariable Integer id, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             Optional<Product> produtoExistente = dao.findById(id);
             List<SupplyTableDTO> supplyDTOs = new ArrayList<>();
@@ -107,6 +113,8 @@ public class ProductController {
                 produtoNovo.setProductName(produto.product_name());
                 produtoNovo.setProduct_value(produto.product_value());
                 produtoNovo = dao.save(produtoNovo);
+
+                logController.logAction(userDetails.getUsername(), "Atualizou um produto", id);
 
                 List<ProductSupply> productSupplies = productSupplyRepository.findByProduct(produtoNovo);
                 for(ProductSupply productSupply:productSupplies){
@@ -139,9 +147,10 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     @Secured("ADMIN")
-    public ResponseEntity<?> deletarProduto(@PathVariable Integer id) {
+    public ResponseEntity<?> deletarProduto(@PathVariable Integer id, @AuthenticationPrincipal UserDetails userDetails) {
         if (dao.existsById(id)) {
             dao.deleteById(id);
+            logController.logAction(userDetails.getUsername(), "Deletou um produto", id);
             return ResponseEntity.ok("Produto deletado com sucesso");
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");

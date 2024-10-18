@@ -2,8 +2,8 @@ package com.fiec.ckplanches.model.supply;
 
 import java.util.List;
 
+import com.fiec.ckplanches.model.MovementSupply.MovementSupply;
 import com.fiec.ckplanches.model.lot.Lot;
-import com.fiec.ckplanches.model.movement.Movement;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
 
 import jakarta.persistence.CascadeType;
@@ -12,7 +12,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -47,12 +46,14 @@ public class Supply {
     @Column(name = "quantidade_maxima", nullable = false)
     private int maxQuantity;
 
-    @ManyToMany(mappedBy = "supplies", cascade = CascadeType.ALL)
-    private List<Movement> movements;
+    @OneToMany(mappedBy = "supply", cascade = CascadeType.REMOVE)
+    private List<MovementSupply> movementSupplies;
 
     @OneToMany(mappedBy = "supply", cascade = CascadeType.REMOVE)
     private List<ProductSupply> productSupplies;
 
     @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
     private List<Lot> lots;
+
+    
 }

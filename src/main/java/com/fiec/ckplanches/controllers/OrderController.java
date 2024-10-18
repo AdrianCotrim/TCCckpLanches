@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,10 +34,12 @@ public class OrderController {
 
     private final OrderRepository dao;
     private final OrderService orderService;
+    private final LogController logController;
 
-    public OrderController(OrderRepository dao, OrderService orderService){
+    public OrderController(OrderRepository dao, OrderService orderService, LogController logController){
         this.dao = dao;
         this.orderService = orderService;
+        this.logController = logController;
     }
 
 
@@ -46,9 +50,10 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<?> criarPedido(@RequestBody OrderRequestDTO orderRequestDTO) {
+    public ResponseEntity<?> criarPedido(@RequestBody OrderRequestDTO orderRequestDTO, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             OrderTableDTO createOrder = orderService.criarPedido(orderRequestDTO.getOrderDTO(), orderRequestDTO.getDeliveryDTO());
+            logController.logAction(userDetails.getUsername(), "Criou um pedido", createOrder.orderId());
             return ResponseEntity.status(HttpStatus.CREATED).body(createOrder); // Retorne a ResponseEntity
         } catch (Exception e) {
             // Log da exceção pode ser útil para depuração
@@ -58,9 +63,10 @@ public class OrderController {
     }
 
     @PutMapping
-    public ResponseEntity<?> atualizarPedido(@RequestBody OrderUpdateDTO orderUpdateDTO) {
+    public ResponseEntity<?> atualizarPedido(@RequestBody OrderUpdateDTO orderUpdateDTO, @AuthenticationPrincipal UserDetails userDetails) {
         try{
             OrderTableDTO updateOrder = orderService.atualizarPedido(orderUpdateDTO);
+            logController.logAction(userDetails.getUsername(), "Atualizou um pedido", updateOrder.orderId());
             return ResponseEntity.ok(updateOrder);
         } catch(Exception e){
             System.err.println("Erro ao criar o pedido: " + e.getMessage());
@@ -69,10 +75,12 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletarPedido(@PathVariable int id) {
+    public ResponseEntity<?> deletarPedido(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
         try{
-            if(orderService.deletarPedido(id))
-            return ResponseEntity.status(HttpStatusCode.valueOf(204)).build();
+            if(orderService.deletarPedido(id)){
+                logController.logAction(userDetails.getUsername(), "Criou um pedido", id);
+                return ResponseEntity.status(HttpStatusCode.valueOf(204)).build();
+            }
             else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         catch (Exception erro){
