@@ -41,6 +41,9 @@ public class Supply {
     @Column(name = "quantidade", nullable = false)
     private int quantity;
 
+    @Column(name = "preco", nullable = false)
+    private double price;
+
     @Column(name = "quantidade_minima", nullable = false)
     private int minQuantity;
 

@@ -78,8 +78,7 @@ public class ProductController {
                     supply.getDescription(),
                     supply.getQuantity(), 
                     supply.getMinQuantity(), 
-                    supply.getMaxQuantity(),
-                    supply.getLots()
+                    supply.getMaxQuantity()
                     ));
             }
             productDTOs.add(new ProductTableDTO(
@@ -125,8 +124,7 @@ public class ProductController {
                         supply.getDescription(),
                         supply.getQuantity(), 
                         supply.getMinQuantity(), 
-                        supply.getMaxQuantity(),
-                        supply.getLots()));
+                        supply.getMaxQuantity()));
                 }
                 
                 return ResponseEntity.ok(new ProductTableDTO(

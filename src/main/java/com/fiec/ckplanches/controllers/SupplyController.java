@@ -55,8 +55,7 @@ public class SupplyController {
                 element.getDescription(),
                 element.getQuantity(),
                 element.getMinQuantity(),
-                element.getMaxQuantity(),
-                element.getLots()
+                element.getMaxQuantity()
             );
             supplyDTOs.add(supplyDTO);
         }
@@ -83,8 +82,7 @@ public class SupplyController {
             insumoNovo.getDescription(),
             insumoNovo.getQuantity(),
             insumoNovo.getMinQuantity(),
-            insumoNovo.getMaxQuantity(),
-            insumoNovo.getLots())
+            insumoNovo.getMaxQuantity())
             ));
         }
         catch(Exception erro){
@@ -116,9 +114,8 @@ public class SupplyController {
             insumoNovo.getDescription(), 
             insumoNovo.getQuantity(), 
             insumoNovo.getMinQuantity(), 
-            insumoNovo.getMaxQuantity(),
-            insumoNovo.getLots()
-            )));
+            insumoNovo.getMaxQuantity())
+            ));
         }
         catch(Exception erro){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro inesperado no servidor");
