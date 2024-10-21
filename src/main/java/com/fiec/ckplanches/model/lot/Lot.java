@@ -3,14 +3,9 @@ package com.fiec.ckplanches.model.lot;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fiec.ckplanches.model.supplier.Supplier;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fiec.ckplanches.model.enums.TypeMovement;
 import com.fiec.ckplanches.model.movement.Movement;
+import com.fiec.ckplanches.model.supplier.Supplier;
 import com.fiec.ckplanches.model.supply.Supply;
-import com.fiec.ckplanches.repositories.MovementRepository;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -21,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,10 +36,13 @@ public class Lot {
     private Integer id;
 
     @Column(name = "data_validade", nullable = false)
-    private LocalDateTime expiration_date;
+    private LocalDateTime expirationDate;
 
     @Column(name = "quantidade", nullable = false)
     private Integer quantity;
+
+    @Column(name = "valor", nullable = false)
+    private double value;
 
     @ManyToOne
     @JoinColumn(name = "fk_insumo", nullable = true)

@@ -33,7 +33,7 @@ public class LotService {
 
         return new LotTableDTO(
             lot.getId(), 
-            lot.getExpiration_date(), 
+            lot.getExpirationDate(), 
             lot.getQuantity(), 
             supplyService.convertSupplyToTableDTO(lot.getSupply()), 
            supplierService.convertSupplierToTableDTO(lot.getSupplier()));
