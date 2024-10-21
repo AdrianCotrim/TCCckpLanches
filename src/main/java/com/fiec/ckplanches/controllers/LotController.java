@@ -47,7 +47,7 @@ public class LotController {
         return lotService.listarLots(lots);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<?> criarLot(@RequestBody LotDTO lotDTO, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             LotTableDTO lotTableDTO = lotService.criarLot(lotDTO);

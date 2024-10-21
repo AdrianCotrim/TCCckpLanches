@@ -1,5 +1,6 @@
 package com.fiec.ckplanches.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,10 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.fiec.ckplanches.DTO.LotDTO;
 import com.fiec.ckplanches.DTO.LotTableDTO;
+import com.fiec.ckplanches.model.enums.TypeMovement;
 import com.fiec.ckplanches.model.lot.Lot;
+import com.fiec.ckplanches.model.movement.Movement;
 import com.fiec.ckplanches.model.supplier.Supplier;
 import com.fiec.ckplanches.model.supply.Supply;
 import com.fiec.ckplanches.repositories.LotRepository;
+import com.fiec.ckplanches.repositories.MovementRepository;
 import com.fiec.ckplanches.repositories.SupplierRepository;
 import com.fiec.ckplanches.repositories.SupplyRepository;
 
@@ -34,6 +38,9 @@ public class LotService {
     @Autowired
     private SupplierRepository supplierRepository;
 
+    @Autowired
+    private MovementRepository movementRepository;
+
     public List<LotTableDTO> listarLots(List<Lot> lots){
         List<LotTableDTO> lotTableDTOs = new ArrayList<>();
         for(Lot lot:lots) lotTableDTOs.add(convertLotToTableDTO(lot));
@@ -50,6 +57,10 @@ public class LotService {
             supply, 
             supplier);
         Lot lotCriado = lotRepository.save(lot);
+        Movement movement = new Movement(LocalDateTime.now(), lot.getQuantity(), TypeMovement.ENTRADA, lotCriado, supply);
+        supply.setQuantity(supply.getQuantity() + lotCriado.getQuantity());
+        supplyRepository.save(supply);
+        movementRepository.save(movement);
         return convertLotToTableDTO(lotCriado);
     }
 
