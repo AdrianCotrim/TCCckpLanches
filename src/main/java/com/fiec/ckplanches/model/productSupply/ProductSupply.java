@@ -3,6 +3,7 @@ package com.fiec.ckplanches.model.productSupply;
 import com.fiec.ckplanches.model.product.Product;
 import com.fiec.ckplanches.model.supply.Supply;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +23,7 @@ import lombok.Setter;
 public class ProductSupply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="pk_produto_insumo")
     private Integer id;
 
     @ManyToOne

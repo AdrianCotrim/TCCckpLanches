@@ -5,8 +5,7 @@ import java.time.LocalDateTime;
 public record LotDTO(
     int supplyId,
     int supplierId,
-    int quantity,
-    double value,
+    int quantity, 
     LocalDateTime expirationDate
 ) {
     

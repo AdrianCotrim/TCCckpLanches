@@ -3,6 +3,7 @@ package com.fiec.ckplanches.model.lot;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.movement.Movement;
 import com.fiec.ckplanches.model.supplier.Supplier;
 import com.fiec.ckplanches.model.supply.Supply;
@@ -44,6 +45,9 @@ public class Lot {
     @Column(name = "valor", nullable = false)
     private double value;
 
+    @Column(name = "status")
+    private Status status;
+
     @ManyToOne
     @JoinColumn(name = "fk_insumo", nullable = true)
     private Supply supply;
@@ -55,12 +59,13 @@ public class Lot {
     @OneToMany(mappedBy = "lot", cascade = CascadeType.ALL)
     private List<Movement> movements;
 
-    public Lot(LocalDateTime expirationDate, Integer quantity, double value, Supply supply, Supplier supplier) {
+    public Lot(LocalDateTime expirationDate, Integer quantity, Supply supply, Supplier supplier) {
         this.expirationDate = expirationDate;
         this.quantity = quantity;
-        this.value = value;
+        this.value = quantity * supply.getPrice();
         this.supply = supply;
         this.supplier = supplier;
+        this.status = Status.ATIVO;
     }
 
 

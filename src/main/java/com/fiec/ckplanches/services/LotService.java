@@ -52,8 +52,7 @@ public class LotService {
         Supplier supplier = supplierRepository.findById(lotDTO.supplierId()).orElseThrow(() -> new IllegalArgumentException("Fornecedor não encontrado"));
         Lot lot = new Lot(
             lotDTO.expirationDate(), 
-            lotDTO.quantity(), 
-            lotDTO.value(), 
+            lotDTO.quantity(),
             supply, 
             supplier);
         Lot lotCriado = lotRepository.save(lot);

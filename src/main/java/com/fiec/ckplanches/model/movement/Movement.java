@@ -50,7 +50,7 @@ public class Movement {
     private Lot lot;
 
     @ManyToOne
-    @JoinColumn(name = "fk_insumo")
+    @JoinColumn(name = "fk_insumo", nullable = true)
     private Supply supply;
 
     public Movement(LocalDateTime movementDate, int quantity, TypeMovement type, Lot lot, Supply supply) {
