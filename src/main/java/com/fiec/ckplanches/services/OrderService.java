@@ -149,6 +149,7 @@ public class OrderService {
             order.getExitMethod(),
             order.getPaymentMethod(),
             order.getTotalValue(),
+            order.getEndDatetime(),
             orderProductTableDTOs,
             order.getDelivery() != null ? convertDeliveryToTableDTO(order.getDelivery()) : null
             );
