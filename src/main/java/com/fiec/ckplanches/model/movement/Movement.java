@@ -3,6 +3,8 @@ package com.fiec.ckplanches.model.movement;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.fiec.ckplanches.model.enums.TypeMovement;
 import com.fiec.ckplanches.model.lot.Lot;
 import com.fiec.ckplanches.model.supplier.Supplier;
@@ -29,12 +31,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "movimentacao")
 public class Movement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "pk_compra")
+    @Column(name = "pk_movement")
     private int id;
 
     @Column(name = "data_movimentacao", nullable = false)

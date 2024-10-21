@@ -35,9 +35,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "lote")
 public class Lot {
-
-    @Autowired
-    private MovementRepository movementRepository;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,9 +58,4 @@ public class Lot {
     @OneToMany(mappedBy = "lot", cascade = CascadeType.ALL)
     private List<Movement> movements;
 
-    @PrePersist
-    public void createMovement(){
-        Movement movement = new Movement(LocalDateTime.now(), this.quantity*this.supply.getPrice(), this.quantity, TypeMovement.ENTRADA, this, supply);
-        movementRepository.save(movement);
-    }
 }
