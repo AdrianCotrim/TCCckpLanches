@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fiec.ckplanches.model.enums.TypeMovement;
+import com.fiec.ckplanches.model.lot.Lot;
 import com.fiec.ckplanches.model.supplier.Supplier;
 import com.fiec.ckplanches.model.supply.Supply;
 
@@ -49,11 +50,29 @@ public class Movement {
     @Enumerated(EnumType.STRING)
     private TypeMovement type;
 
+    // @ManyToOne
+    // @JoinColumn(name = "fk_fornecedor", nullable = true)
+    // private Supplier supplier;
+
     @ManyToOne
-    @JoinColumn(name = "fk_fornecedor", nullable = true)
-    private Supplier supplier;
+    @JoinColumn(name = "fk_lote", nullable = true)
+    private Lot lot;
 
     @ManyToOne
     @JoinColumn(name = "fk_insumo")
     private Supply supply;
+
+    public Movement(LocalDateTime movementDate, double value, int quantity, TypeMovement type, Lot lot, Supply supply) {
+        this.movementDate = movementDate;
+        this.value = value;
+        this.quantity = quantity;
+        this.type = type;
+        this.lot = lot;
+        this.supply = supply;
+    }
+
+    
+
+    
+    
 }

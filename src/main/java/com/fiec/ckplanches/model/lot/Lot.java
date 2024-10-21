@@ -1,9 +1,18 @@
 package com.fiec.ckplanches.model.lot;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.List;
 
+import com.fiec.ckplanches.model.supplier.Supplier;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fiec.ckplanches.model.enums.TypeMovement;
+import com.fiec.ckplanches.model.movement.Movement;
 import com.fiec.ckplanches.model.supply.Supply;
+import com.fiec.ckplanches.repositories.MovementRepository;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +20,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -25,6 +35,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "lote")
 public class Lot {
+
+    @Autowired
+    private MovementRepository movementRepository;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +45,7 @@ public class Lot {
     private Integer id;
 
     @Column(name = "data_validade", nullable = false)
-    private Date expiration_date;
+    private LocalDateTime expiration_date;
 
     @Column(name = "quantidade", nullable = false)
     private Integer quantity;
@@ -41,8 +54,16 @@ public class Lot {
     @JoinColumn(name = "fk_insumo", nullable = true)
     private Supply supply;
 
+    @ManyToOne // Associa o lote a um fornecedor
+    @JoinColumn(name = "fk_fornecedor", nullable = true) // Coluna na tabela do banco
+    private Supplier supplier; // Classe que representa o fornecedor
+
+    @OneToMany(mappedBy = "lot", cascade = CascadeType.ALL)
+    private List<Movement> movements;
+
     @PrePersist
-    public void addQuantitySupply(){
-        supply.setQuantity(supply.getQuantity() + this.quantity);
+    public void createMovement(){
+        Movement movement = new Movement(LocalDateTime.now(), this.quantity*this.supply.getPrice(), this.quantity, TypeMovement.ENTRADA, this, supply);
+        movementRepository.save(movement);
     }
 }

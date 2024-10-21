@@ -2,8 +2,10 @@ package com.fiec.ckplanches.model.supplier;
 
 import java.util.List;
 
+import com.fiec.ckplanches.model.lot.Lot;
 import com.fiec.ckplanches.model.movement.Movement;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,13 +41,16 @@ public class Supplier {
     @Column(name = "endereco", nullable = false)
     private String address;
 
-    @OneToMany(mappedBy = "supplier")
-    private List<Movement> movements;
+    // @OneToMany(mappedBy = "supplier")
+    // private List<Movement> movements;
 
-    @PreRemove
-	public void UpdatePurchaseOnDelete() {
-		for (Movement movement : this.getMovements()) {
-			movement.setSupplier(null);
-		}
-	}
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
+    private List<Lot> lots;
+
+    // @PreRemove
+	// public void UpdatePurchaseOnDelete() {
+	// 	for (Movement movement : this.getMovements()) {
+	// 		movement.setSupplier(null);
+	// 	}
+	// }
 }

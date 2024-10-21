@@ -254,8 +254,7 @@ public class OrderService {
             supply.getDescription(), 
             supply.getQuantity(), 
             supply.getMinQuantity(), 
-            supply.getMaxQuantity(), 
-            null);
+            supply.getMaxQuantity());
     }
 
     // Delivery
