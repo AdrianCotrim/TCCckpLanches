@@ -6,9 +6,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fiec.ckplanches.DTO.LotDTO;
 import com.fiec.ckplanches.DTO.LotTableDTO;
 import com.fiec.ckplanches.model.lot.Lot;
+import com.fiec.ckplanches.model.supplier.Supplier;
+import com.fiec.ckplanches.model.supply.Supply;
 import com.fiec.ckplanches.repositories.LotRepository;
+import com.fiec.ckplanches.repositories.SupplierRepository;
+import com.fiec.ckplanches.repositories.SupplyRepository;
 
 @Service
 public class LotService {
@@ -21,13 +26,34 @@ public class LotService {
     private SupplyService supplyService;
 
     @Autowired
+    private SupplyRepository supplyRepository;
+
+    @Autowired
     private SupplierService supplierService;
+
+    @Autowired
+    private SupplierRepository supplierRepository;
 
     public List<LotTableDTO> listarLots(List<Lot> lots){
         List<LotTableDTO> lotTableDTOs = new ArrayList<>();
         for(Lot lot:lots) lotTableDTOs.add(convertLotToTableDTO(lot));
         return lotTableDTOs;
     }
+    
+    public LotTableDTO criarLot(LotDTO lotDTO){
+        Supply supply =  supplyRepository.findById(lotDTO.supplyId()).orElseThrow(() -> new IllegalArgumentException("Insumo não encontrado"));
+        Supplier supplier = supplierRepository.findById(lotDTO.supplierId()).orElseThrow(() -> new IllegalArgumentException("Fornecedor não encontrado"));
+        Lot lot = new Lot(
+            lotDTO.expirationDate(), 
+            lotDTO.quantity(), 
+            lotDTO.value(), 
+            supply, 
+            supplier);
+        Lot lotCriado = lotRepository.save(lot);
+        return convertLotToTableDTO(lotCriado);
+    }
+
+    // utils
 
     public LotTableDTO convertLotToTableDTO(Lot lot){
 

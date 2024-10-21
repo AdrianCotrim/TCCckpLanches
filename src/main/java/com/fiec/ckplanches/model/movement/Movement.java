@@ -28,7 +28,7 @@ import lombok.Setter;
 public class Movement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "pk_movement")
+    @Column(name = "pk_movimentacao")
     private int id;
 
     @Column(name = "data_movimentacao", nullable = false)

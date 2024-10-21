@@ -32,7 +32,7 @@ public class Supply {
     @Column(name = "pk_insumo")
     private int id;
 
-    @Column(name = "name", nullable = false, length=100)
+    @Column(name = "nome_insumo", nullable = false, length=100)
     private String name;
 
     @Column(name = "descricao")
