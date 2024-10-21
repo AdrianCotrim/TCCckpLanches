@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fiec.ckplanches.DTO.ValuesDTO;
+import com.fiec.ckplanches.model.enums.TypeMovement;
 import com.fiec.ckplanches.model.movement.Movement;
 import com.fiec.ckplanches.model.order.Order;
 import com.fiec.ckplanches.repositories.MovementRepository;
@@ -25,7 +26,7 @@ import com.fiec.ckplanches.repositories.OrderRepository;
 @RequestMapping("/tela-inicial")
 public class DashboardController {
     @Autowired
-    private MovementRepository purchaseRepository;
+    private MovementRepository movementRepository;
     @Autowired
     private OrderRepository orderRepository;
 
@@ -37,7 +38,8 @@ public class DashboardController {
             LocalDateTime startDate = endDate.minusDays(LocalDateTime.now().getDayOfWeek().getValue()+1);
 
             // Consultar o banco de dados
-            List<Movement> purchases = purchaseRepository.findByMovementDateBetween(startDate, endDate);
+            List<Movement> entradas = movementRepository.findByMovementDateBetweenAndType(startDate, endDate, TypeMovement.ENTRADA);
+            List<Movement> baixas = movementRepository.findByMovementDateBetweenAndType(startDate, endDate, TypeMovement.BAIXA);
             List<Order> orders = orderRepository.findByEndDatetimeBetween(startDate, endDate);
 
 
@@ -45,14 +47,21 @@ public class DashboardController {
             double[] spents = new double[7]; // De domingo (0) a sábado (6)
             double[] earneds = new double[7]; // De domingo (0) a sábado (6)
 
-            // Processar gastos
-            for (Movement purchase : purchases) {
-                int dayOfWeekIndex = (purchase.getMovementDate().plusHours(3).getDayOfWeek().getValue() % 7);
+            // Processar gastos por compras
+            for (Movement entrada : entradas) {
+                int dayOfWeekIndex = (entrada.getMovementDate().plusHours(3).getDayOfWeek().getValue() % 7);
                 if (dayOfWeekIndex < 0) dayOfWeekIndex = 6; // Ajustar para domingo como índice 0
-                spents[dayOfWeekIndex] += purchase.getValue();
+                spents[dayOfWeekIndex] += entrada.getValue();
             }
 
-            // Processar ganhos
+            // Processar gastos por baixas
+            for (Movement baixa : baixas) {
+                int dayOfWeekIndex = (baixa.getMovementDate().plusHours(3).getDayOfWeek().getValue() % 7);
+                if (dayOfWeekIndex < 0) dayOfWeekIndex = 6; // Ajustar para domingo como índice 0
+                spents[dayOfWeekIndex] += baixa.getValue();
+            }
+
+            // Processar ganhos por vendas
             for (Order order : orders) {
                 int dayOfWeekIndex = (order.getEndDatetime().plusHours(3).getDayOfWeek().getValue() % 7);
                 if (dayOfWeekIndex < 0) dayOfWeekIndex = 6; // Ajustar para domingo como índice 0

@@ -3,9 +3,9 @@ package com.fiec.ckplanches.model.movement;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fiec.ckplanches.model.MovementSupply.MovementSupply;
 import com.fiec.ckplanches.model.enums.TypeMovement;
 import com.fiec.ckplanches.model.supplier.Supplier;
+import com.fiec.ckplanches.model.supply.Supply;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -53,6 +53,7 @@ public class Movement {
     @JoinColumn(name = "fk_fornecedor", nullable = true)
     private Supplier supplier;
 
-    @OneToMany(mappedBy = "movement", cascade = CascadeType.REMOVE)
-    private List<MovementSupply> movementSupplies;
+    @ManyToOne
+    @JoinColumn(name = "fk_insumo")
+    private Supply supply;
 }

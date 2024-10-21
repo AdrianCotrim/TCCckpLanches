@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum TypeMovement {
     
     ENTRADA("ENTRADA"),
-    SAIDA("SAIDA");
+    SAIDA("SAIDA"),
+    BAIXA("BAIXA");
 
     private String tipo;
 

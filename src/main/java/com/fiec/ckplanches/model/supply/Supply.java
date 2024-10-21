@@ -1,9 +1,10 @@
 package com.fiec.ckplanches.model.supply;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.fiec.ckplanches.model.MovementSupply.MovementSupply;
 import com.fiec.ckplanches.model.lot.Lot;
+import com.fiec.ckplanches.model.movement.Movement;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
 
 import jakarta.persistence.CascadeType;
@@ -47,10 +48,10 @@ public class Supply {
     private int maxQuantity;
 
     @OneToMany(mappedBy = "supply", cascade = CascadeType.REMOVE)
-    private List<MovementSupply> movementSupplies;
+    private List<Movement> movements = new ArrayList<>();
 
     @OneToMany(mappedBy = "supply", cascade = CascadeType.REMOVE)
-    private List<ProductSupply> productSupplies;
+    private List<ProductSupply> productSupplies = new ArrayList<>();
 
     @OneToMany(mappedBy = "supply", cascade = CascadeType.ALL)
     private List<Lot> lots;
