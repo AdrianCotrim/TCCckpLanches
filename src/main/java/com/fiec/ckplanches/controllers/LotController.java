@@ -44,7 +44,7 @@ public class LotController {
         return lotService.listarLots(lots);
     }
 
-    @GetMapping("/lots")
+    @GetMapping("/lot")
     public List<LotTableDTO> getLotsBySupply(@RequestParam int supplyId) {
         List<Lot> lots = lotRepository.findBySupplyId(supplyId);
         return lotService.listarLots(lots);

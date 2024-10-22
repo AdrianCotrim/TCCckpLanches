@@ -10,6 +10,7 @@ import com.fiec.ckplanches.model.supplier.Supplier;
 public class SupplierService {
     
     public SupplierTableDTO convertSupplierToTableDTO(Supplier supplier){
+        if(supplier == null) return null;
         return new SupplierTableDTO(supplier.getId(), 
         supplier.getName(), 
         supplier.getEmail(), 

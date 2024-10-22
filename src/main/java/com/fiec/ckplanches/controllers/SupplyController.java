@@ -23,11 +23,17 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.fiec.ckplanches.DTO.SupplyDTO;
 import com.fiec.ckplanches.DTO.SupplyTableDTO;
+import com.fiec.ckplanches.DTO.SupplyUpdateDTO;
+import com.fiec.ckplanches.model.enums.TypeMovement;
+import com.fiec.ckplanches.model.movement.Movement;
 import com.fiec.ckplanches.model.supply.Supply;
 import com.fiec.ckplanches.repositories.LotRepository;
+import com.fiec.ckplanches.repositories.MovementRepository;
 import com.fiec.ckplanches.repositories.SupplyRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/insumos")
@@ -41,6 +47,9 @@ public class SupplyController {
 
     @Autowired
     private LogController logController;
+
+    @Autowired
+    private MovementRepository movementRepository;
 
     @GetMapping
     @Secured("ADMIN")
@@ -74,7 +83,11 @@ public class SupplyController {
             insumoNovo.setMinQuantity(insumo.minQuantity());
             insumoNovo.setMaxQuantity(insumo.maxQuantity());
             insumoNovo.setQuantity(insumo.quantity());
-            dao.save(insumoNovo);
+            insumoNovo = dao.save(insumoNovo);
+            if(insumoNovo.getQuantity() > 0) {
+                Movement movement = new Movement(LocalDateTime.now(), insumoNovo.getQuantity(), TypeMovement.ENTRADA, insumoNovo);
+                movementRepository.save(movement);
+            }
             logController.logAction(userDetails.getUsername(), "Criou um insumo", insumoNovo.getId());
             return ResponseEntity.ok(Map.of("result", new SupplyTableDTO(
             insumoNovo.getId(),
@@ -92,8 +105,9 @@ public class SupplyController {
 
     @PutMapping("/{id}")
     @Secured("ADMIN")
-    public ResponseEntity<?> editarInsumo(@RequestBody SupplyDTO insumo, @PathVariable Integer id, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> editarInsumo(@RequestBody SupplyUpdateDTO insumo, @PathVariable Integer id, @AuthenticationPrincipal UserDetails userDetails) {
         try{
+            System.out.println(insumo);
             Supply insumoNovo = null;
             Optional<Supply> novoInsumo = dao.findById(id);
             if(novoInsumo.isPresent()){
