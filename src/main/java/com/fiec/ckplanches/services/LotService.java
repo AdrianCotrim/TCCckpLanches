@@ -54,7 +54,8 @@ public class LotService {
             lotDTO.expirationDate(), 
             lotDTO.quantity(),
             supply, 
-            supplier);
+            supplier,
+            lotDTO.value());
         Lot lotCriado = lotRepository.save(lot);
         Movement movement = new Movement(LocalDateTime.now(), lot.getQuantity(), TypeMovement.ENTRADA, lotCriado, supply);
         supply.setQuantity(supply.getQuantity() + lotCriado.getQuantity());

@@ -6,7 +6,8 @@ public record LotDTO(
     int supplyId,
     int supplierId,
     int quantity, 
-    LocalDateTime expirationDate
+    LocalDateTime expirationDate,
+    double value
 ) {
     
 }
