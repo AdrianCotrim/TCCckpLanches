@@ -47,22 +47,90 @@ public class LotService {
         return lotTableDTOs;
     }
     
-    public LotTableDTO criarLot(LotDTO lotDTO){
-        Supply supply =  supplyRepository.findById(lotDTO.supplyId()).orElseThrow(() -> new IllegalArgumentException("Insumo não encontrado"));
-        Supplier supplier = supplierRepository.findById(lotDTO.supplierId()).orElseThrow(() -> new IllegalArgumentException("Fornecedor não encontrado"));
+    public LotTableDTO criarLot(LotDTO lotDTO) {
+        Supply supply = supplyRepository.findById(lotDTO.supplyId())
+            .orElseThrow(() -> new IllegalArgumentException("Insumo não encontrado"));
+        Supplier supplier = null;
+        if(lotDTO.supplierId() != null){
+            supplier = supplierRepository.findById(lotDTO.supplierId())
+            .orElseThrow(() -> new IllegalArgumentException("Fornecedor não encontrado"));
+        }
+    
+        // Criação do lote
         Lot lot = new Lot(
             lotDTO.expirationDate(), 
             lotDTO.quantity(),
             supply, 
             supplier,
-            lotDTO.value());
+            lotDTO.value()
+        );
+    
         Lot lotCriado = lotRepository.save(lot);
-        Movement movement = new Movement(LocalDateTime.now(), lot.getQuantity(), TypeMovement.ENTRADA, lotCriado, supply);
+    
+        // Criar movimento de entrada
+        Movement movement = new Movement(LocalDateTime.now(), lotCriado.getQuantity(), TypeMovement.ENTRADA, lotCriado, supply);
         supply.setQuantity(supply.getQuantity() + lotCriado.getQuantity());
+    
+        // Salvar as alterações no insumo e movimento
         supplyRepository.save(supply);
         movementRepository.save(movement);
+    
         return convertLotToTableDTO(lotCriado);
     }
+    
+    public LotTableDTO atualizarLot(int id, LotDTO lotDTO) {
+        Lot lot = lotRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Lote não encontrado"));
+        Supply supply = supplyRepository.findById(lotDTO.supplyId())
+            .orElseThrow(() -> new IllegalArgumentException("Insumo não encontrado"));
+        Supplier supplier = null;
+        if(lotDTO.supplierId() != null){
+            supplier = supplierRepository.findById(lotDTO.supplierId())
+            .orElseThrow(() -> new IllegalArgumentException("Fornecedor não encontrado"));
+        }
+
+        int quantidadeAtual = lot.getQuantity();
+    
+        // Atualizando o lote
+        Lot lotAtualizado = new Lot(
+            lot.getId(), 
+            lotDTO.expirationDate(), 
+            lotDTO.quantity(), 
+            lotDTO.value(), 
+            supply, supplier
+        );
+    
+        // Salvar o lote atualizado
+        lotAtualizado = lotRepository.save(lotAtualizado); // Corrigido aqui
+    
+        // Criar movimento baseado na alteração de quantidade
+        Movement movement = null;
+        int novaQuantidade = lotAtualizado.getQuantity();
+
+        System.out.println("Quan-Atual: "+quantidadeAtual);
+        System.out.println("Nova-QUant: "+novaQuantidade);
+        
+        if (quantidadeAtual > novaQuantidade) {
+            System.out.println("SUB");
+            int quantidadeSub = quantidadeAtual - novaQuantidade;
+            supply.setQuantity(supply.getQuantity() - quantidadeSub);
+            movement = new Movement(LocalDateTime.now(), quantidadeSub, TypeMovement.SAIDA, lotAtualizado, supply);
+        } else if (quantidadeAtual < novaQuantidade) { // Correção feita aqui
+            System.out.println("SUM");
+            int quantidadeSum = novaQuantidade - quantidadeAtual; // Corrigido
+            supply.setQuantity(supply.getQuantity() + quantidadeSum);
+            movement = new Movement(LocalDateTime.now(), quantidadeSum, TypeMovement.ENTRADA, lotAtualizado, supply);
+        }
+    
+        // Salvar as alterações no insumo e movimento
+        supplyRepository.save(supply);
+        if (movement != null) { // Verifica se o movimento foi criado
+            movementRepository.save(movement);
+        }
+    
+        return convertLotToTableDTO(lotAtualizado);
+    }
+    
 
     // utils
 

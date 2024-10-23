@@ -54,18 +54,22 @@ public class LotController {
     public ResponseEntity<?> criarLot(@RequestBody LotDTO lotDTO, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             LotTableDTO lotTableDTO = lotService.criarLot(lotDTO);
-            logController.logAction(userDetails.getUsername(), "Atualizou um pedido", lotTableDTO.id());
+            logController.logAction(userDetails.getUsername(), "criou um lote", lotTableDTO.id());
             return ResponseEntity.ok(lotTableDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    @PutMapping("path/{id}")
-    public String putMethodName(@PathVariable String id, @RequestBody String entity) {
-        //TODO: process PUT request
-        
-        return entity;
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizarLot(@PathVariable int id, @RequestBody LotDTO lotDTO, @AuthenticationPrincipal UserDetails userDetails) {
+        try{
+            LotTableDTO lotTableDTO = lotService.atualizarLot(id, lotDTO);
+            logController.logAction(userDetails.getUsername(), "atualizou um lote", lotTableDTO.id());
+            return ResponseEntity.ok(lotTableDTO);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
     
     

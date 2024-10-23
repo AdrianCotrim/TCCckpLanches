@@ -71,6 +71,18 @@ public class Lot {
         this.status = Status.ATIVO;
     }
 
+    public Lot(Integer id, LocalDateTime expirationDate, Integer quantity, double value, Supply supply,
+            Supplier supplier) {
+        this.id = id;
+        this.expirationDate = expirationDate;
+        this.quantity = quantity;
+        this.value = value;
+        this.supply = supply;
+        this.supplier = supplier;
+        this.status = Status.ATIVO;
+    }
+    
+    
 
     
 }
