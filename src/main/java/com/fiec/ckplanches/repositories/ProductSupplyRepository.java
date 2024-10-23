@@ -15,4 +15,5 @@ public interface ProductSupplyRepository extends JpaRepository<ProductSupply, In
     List<ProductSupply> findByProduct(Product product);
     List<ProductSupply> findBySupply(Supply supply);
     ProductSupply findByProductAndSupply(Product product, Supply supply);
+    void deleteByProduct(Product product);
 }

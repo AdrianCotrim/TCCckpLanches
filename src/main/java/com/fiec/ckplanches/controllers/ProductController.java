@@ -40,6 +40,7 @@ import com.fiec.ckplanches.model.productSupply.ProductSupply;
 import com.fiec.ckplanches.model.supply.Supply;
 import com.fiec.ckplanches.repositories.ProductRepository;
 import com.fiec.ckplanches.repositories.ProductSupplyRepository;
+import com.fiec.ckplanches.repositories.SupplyRepository;
 import com.fiec.ckplanches.services.ProductService;
 
 
@@ -58,6 +59,10 @@ public class ProductController {
 
     @Autowired
     private LogController logController;
+
+    @Autowired
+    private SupplyRepository supplyRepository;
+
 
     private final Path pastaImagens = Paths.get(System.getProperty("user.home"), "TCCckpLanches", "src", "main", "resources", "ProductImages");
 
@@ -103,14 +108,28 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @Secured("ADMIN")
-    public ResponseEntity<?> editarProduto(@RequestBody ProductDTO produto, @PathVariable Integer id, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> editarProduto(@RequestBody ProductCreateDTO produto, @PathVariable Integer id, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             Optional<Product> produtoExistente = dao.findById(id);
             List<SupplyTableDTO> supplyDTOs = new ArrayList<>();
             if (produtoExistente.isPresent()) {
                 Product produtoNovo = produtoExistente.get();
-                produtoNovo.setProductName(produto.product_name());
-                produtoNovo.setProduct_value(produto.product_value());
+                produtoNovo.setProductName(produto.productName());
+                produtoNovo.setProduct_value(produto.productValue());
+                produtoNovo.setDescription(produto.description());
+                produtoNovo.setCategory(produto.category());
+
+                //Deletar productSupplies anteriores
+                productSupplyRepository.deleteByProduct(produtoNovo);
+
+                //Vincular os insumos ao produto
+                if(produto.supplieNames() != null)
+                for(String name:produto.supplieNames()){
+                    Supply supplyOptional = supplyRepository.findByName(name);
+                    if(supplyOptional != null)
+                    productService.criarProductSupply(produtoNovo, supplyOptional);
+                }
+
                 produtoNovo = dao.save(produtoNovo);
 
                 logController.logAction(userDetails.getUsername(), "Atualizou um produto", id);
