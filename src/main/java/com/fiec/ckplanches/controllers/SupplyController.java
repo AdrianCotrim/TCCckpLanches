@@ -149,7 +149,7 @@ public class SupplyController {
 
     @GetMapping("/{name}")
     @Secured("ADMIN")
-    public List<Supply> findByName(@PathVariable String nome) {
+    public Supply findByName(@PathVariable String nome) {
        return dao.findByName(nome) ;
     }
 

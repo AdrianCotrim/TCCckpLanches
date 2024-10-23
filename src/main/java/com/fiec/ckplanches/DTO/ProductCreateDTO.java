@@ -6,7 +6,7 @@ public record ProductCreateDTO(
     String productName,
     Double productValue,
     String description,
-    int[] idSupllies,
+    String[] supplieNames,
     Category category
 ) {
     

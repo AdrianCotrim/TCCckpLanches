@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fiec.ckplanches.DTO.ProductCreateDTO;
+import com.fiec.ckplanches.DTO.ProductTableDTO;
+import com.fiec.ckplanches.DTO.SupplyTableDTO;
 import com.fiec.ckplanches.model.product.Product;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
 import com.fiec.ckplanches.model.supply.Supply;
@@ -34,6 +37,9 @@ public class ProductService {
 
     @Autowired
     private SupplyRepository supplyRepository;
+
+    @Autowired
+    private SupplyService supplyService;
 
      public String salvarImagem(MultipartFile file) throws IOException {
         String nomeImagem = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
@@ -62,9 +68,8 @@ public class ProductService {
         return nomeNovaImagem;  // Retorna o nome da nova imagem (que é o mesmo)
     }
 
-    public Product criarProduto(ProductCreateDTO produtoDTO, MultipartFile imagem) throws IOException {
-        // Salva a imagem
-        String nomeImagem = salvarImagem(imagem);
+    public ProductTableDTO criarProduto(ProductCreateDTO produtoDTO, MultipartFile imagem) throws IOException {
+        
 
         // Cria o novo produto
         Product produtoNovo = new Product();
@@ -72,19 +77,23 @@ public class ProductService {
         produtoNovo.setProduct_value(produtoDTO.productValue());
         produtoNovo.setDescription(produtoDTO.description());
         produtoNovo.setCategory(produtoDTO.category());
+
+        produtoNovo = productRepository.save(produtoNovo);
         
         //Vincular os insumos ao produto
-        for(int id:produtoDTO.idSupllies()){
-            Optional<Supply> supplyOptional = supplyRepository.findById(id);
-            if(supplyOptional.isPresent()){
-                criarProductSupply(produtoNovo, supplyOptional.get());
-            }
+        if(produtoDTO.supplieNames() != null)
+        for(String name:produtoDTO.supplieNames()){
+            Supply supplyOptional = supplyRepository.findByName(name);
+            if(supplyOptional != null)
+            produtoNovo = criarProductSupply(produtoNovo, supplyOptional);
         }
 
+        // Salva a imagem
+        String nomeImagem = salvarImagem(imagem);
         produtoNovo.setImagemUrl(nomeImagem); // Define a URL da imagem
 
         // Salva o produto no banco de dados
-        return productRepository.save(produtoNovo);
+        return convertProductToTableDTO(productRepository.save(produtoNovo));
 }
 
     public void deleteProductById(Integer productId) throws IOException{
@@ -110,12 +119,35 @@ public class ProductService {
             productRepository.delete(product);
         }
 
-        public void criarProductSupply(Product product, Supply supply){
+        public Product criarProductSupply(Product product, Supply supply){
             ProductSupply productSupply = new ProductSupply();
             productSupply.setProduct(product);
             productSupply.setSupply(supply);
             productSupplyRepository.save(productSupply); 
+            product.getProductSupplies().add(productSupply);
+            return product;
         }
 
     
+
+        // Utils
+
+        public ProductTableDTO convertProductToTableDTO(Product product){
+
+            List<SupplyTableDTO> supplyTableDTOs = new ArrayList<>();
+            System.out.println("entrei");
+
+            if(product.getProductSupplies() != null)
+                for(ProductSupply productSupply:product.getProductSupplies()){
+                    Supply supply = productSupply.getSupply();
+                    supplyTableDTOs.add(supplyService.convertSupplyToTableDTO(supply));
+                }
+
+            return new ProductTableDTO(product.getProduct_id(), 
+            product.getProductName(), 
+            product.getProduct_value(), 
+            product.getImagemUrl(), 
+            product.getDescription(), 
+            supplyTableDTOs);
+        }
 }

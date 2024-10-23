@@ -1,5 +1,6 @@
 package com.fiec.ckplanches.model.product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fiec.ckplanches.model.enums.Category;
@@ -51,9 +52,9 @@ public class Product {
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductOrder> productOrders;
+    private List<ProductOrder> productOrders = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductSupply> productSupplies; 
+    private List<ProductSupply> productSupplies = new ArrayList<>(); 
 
 }

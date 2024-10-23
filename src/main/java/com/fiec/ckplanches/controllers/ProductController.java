@@ -96,8 +96,8 @@ public class ProductController {
     @PostMapping
     @Secured("ADMIN")
     public ResponseEntity<?> criarProduto(@RequestPart ProductCreateDTO produtoDTO, @RequestPart("imagem") MultipartFile imagem, @AuthenticationPrincipal UserDetails userDetails) throws IOException {
-        Product produtoCriado = productService.criarProduto(produtoDTO, imagem);
-        logController.logAction(userDetails.getUsername(), "Criou um produto", produtoCriado.getProduct_id());
+        ProductTableDTO produtoCriado = productService.criarProduto(produtoDTO, imagem);
+        logController.logAction(userDetails.getUsername(), "Criou um produto", produtoCriado.product_id());
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
     }
 

@@ -9,5 +9,5 @@ import com.fiec.ckplanches.model.supply.Supply;
 @Repository
 public interface SupplyRepository extends JpaRepository<Supply, Integer>{
 
-    List<Supply> findByName(String name);
+    Supply findByName(String name);
 }
