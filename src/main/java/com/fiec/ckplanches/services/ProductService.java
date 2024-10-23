@@ -70,6 +70,9 @@ public class ProductService {
 
     public ProductTableDTO criarProduto(ProductCreateDTO produtoDTO, MultipartFile imagem) throws IOException {
         
+        Product productOptional =  productRepository.findByProductName(produtoDTO.productName());
+
+        if(productOptional != null) throw new IllegalArgumentException("Esse produto já existe!"); 
 
         // Cria o novo produto
         Product produtoNovo = new Product();
@@ -85,7 +88,7 @@ public class ProductService {
         for(String name:produtoDTO.supplieNames()){
             Supply supplyOptional = supplyRepository.findByName(name);
             if(supplyOptional != null)
-            produtoNovo = criarProductSupply(produtoNovo, supplyOptional);
+            criarProductSupply(produtoNovo, supplyOptional);
         }
 
         // Salva a imagem
@@ -119,13 +122,11 @@ public class ProductService {
             productRepository.delete(product);
         }
 
-        public Product criarProductSupply(Product product, Supply supply){
+        public void criarProductSupply(Product product, Supply supply){
             ProductSupply productSupply = new ProductSupply();
             productSupply.setProduct(product);
             productSupply.setSupply(supply);
             productSupplyRepository.save(productSupply); 
-            product.getProductSupplies().add(productSupply);
-            return product;
         }
 
     
