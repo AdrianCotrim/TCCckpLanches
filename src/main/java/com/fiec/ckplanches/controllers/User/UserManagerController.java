@@ -67,9 +67,9 @@ public class UserManagerController {
        
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Secured("ADMIN")
-    public ResponseEntity<?> editarUsuario(@RequestBody User user) {
+    public ResponseEntity<?> editarUsuario(@RequestBody User user, @PathVariable int id) {
         Optional<User> userOptional = dao.findByUserEmail(user.getUserEmail());
 
         //Tratamento de erros
@@ -78,7 +78,7 @@ public class UserManagerController {
             erro.put("erro", "Usuário não encontrado");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
         }
-        if(dao.findByUserEmail(user.getUserEmail()) != null || dao.findByUsername(user.getUsername()) != null){
+        if((dao.findByUserEmail(user.getUserEmail()) != null || dao.findByUsername(user.getUsername()) != null) && userOptional.get().getUserId() != id){
             Map<String, String> erro = new HashMap<>();
             erro.put("erro", "O nome ou o email do usuário já estão sendo usados");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
