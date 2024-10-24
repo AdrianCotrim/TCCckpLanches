@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.fiec.ckplanches.model.lot.Lot;
 import com.fiec.ckplanches.model.supplier.Supplier;
+import com.fiec.ckplanches.model.enums.Status;
+
 
 
 
@@ -18,6 +20,7 @@ public interface LotRepository extends JpaRepository<Lot, Integer>{
     List<Lot> findByExpirationDateBetween(LocalDateTime startDate, LocalDateTime endDate);
     List<Lot> findBySupplyId(int supplyId);
     List<Lot> findBySupplier(Supplier supplier);
+    List<Lot> findByStatus(Status status);
 
 
 }

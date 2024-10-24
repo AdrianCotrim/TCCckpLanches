@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.fiec.ckplanches.DTO.LotDTO;
 import com.fiec.ckplanches.DTO.LotTableDTO;
+import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.enums.TypeMovement;
 import com.fiec.ckplanches.model.lot.Lot;
 import com.fiec.ckplanches.model.movement.Movement;
@@ -18,6 +19,8 @@ import com.fiec.ckplanches.repositories.LotRepository;
 import com.fiec.ckplanches.repositories.MovementRepository;
 import com.fiec.ckplanches.repositories.SupplierRepository;
 import com.fiec.ckplanches.repositories.SupplyRepository;
+
+import java.util.Optional;
 
 @Service
 public class LotService {
@@ -129,6 +132,17 @@ public class LotService {
         }
     
         return convertLotToTableDTO(lotAtualizado);
+    }
+
+    public boolean deletarLot(int id){
+        Optional<Lot> lotOptional = lotRepository.findById(id);
+        if(lotOptional.isPresent()){
+            Lot lot = lotOptional.get();
+            lot.setStatus(Status.INATIVO);
+            lotRepository.save(lot);
+            return true;
+        }
+        return false;
     }
     
 
