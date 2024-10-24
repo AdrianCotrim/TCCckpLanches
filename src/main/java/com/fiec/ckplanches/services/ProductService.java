@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fiec.ckplanches.DTO.ProductCreateDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
 import com.fiec.ckplanches.DTO.SupplyTableDTO;
+import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.product.Product;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
 import com.fiec.ckplanches.model.supply.Supply;
@@ -80,6 +81,7 @@ public class ProductService {
         produtoNovo.setProduct_value(produtoDTO.productValue());
         produtoNovo.setDescription(produtoDTO.description());
         produtoNovo.setCategory(produtoDTO.category());
+        produtoNovo.setStatus(Status.ATIVO);
 
         produtoNovo = productRepository.save(produtoNovo);
         

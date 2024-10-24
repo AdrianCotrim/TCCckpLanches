@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fiec.ckplanches.model.enums.Category;
+import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.productOrder.ProductOrder;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
 
@@ -50,6 +51,9 @@ public class Product {
     @Enumerated(EnumType.STRING)
     @Column(name = "categoria")
     private Category category;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductOrder> productOrders = new ArrayList<>();
