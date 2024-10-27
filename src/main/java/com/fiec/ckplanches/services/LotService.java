@@ -140,6 +140,9 @@ public class LotService {
             Lot lot = lotOptional.get();
             lot.setStatus(Status.INATIVO);
             lotRepository.save(lot);
+            Supply supply = lot.getSupply();
+            supply.setQuantity(supply.getQuantity()-lot.getQuantity());
+            supplyRepository.save(supply);
             return true;
         }
         return false;
