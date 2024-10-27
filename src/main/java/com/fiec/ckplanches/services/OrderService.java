@@ -117,7 +117,8 @@ public class OrderService {
             product.getProductName(),
             product.getProduct_value(),
             product.getImagemUrl(), 
-            product.getDescription(), 
+            product.getDescription(),
+            product.getCategory(), 
             supplyTableDTOs  
         ));
     }

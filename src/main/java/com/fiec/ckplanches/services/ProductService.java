@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,7 +149,8 @@ public class ProductService {
             product.getProductName(), 
             product.getProduct_value(), 
             product.getImagemUrl(), 
-            product.getDescription(), 
+            product.getDescription(),
+            product.getCategory(),
             supplyTableDTOs);
         }
 }

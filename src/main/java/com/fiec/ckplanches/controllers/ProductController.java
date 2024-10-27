@@ -31,7 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fiec.ckplanches.DTO.ProductCreateDTO;
-import com.fiec.ckplanches.DTO.ProductDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
 import com.fiec.ckplanches.DTO.SupplyTableDTO;
 import com.fiec.ckplanches.model.enums.Category;
@@ -92,6 +91,7 @@ public class ProductController {
                 element.getProduct_value(),
                 caminhoImagem, // Não incluir o caminho completo
                 element.getDescription(),
+                element.getCategory(),
                 supplyDTOs
             ));
         }
@@ -152,6 +152,7 @@ public class ProductController {
                     produtoNovo.getProduct_value(),
                     produtoNovo.getImagemUrl(), // Nome da imagem
                     produtoNovo.getDescription(),
+                    produtoNovo.getCategory(),
                     supplyDTOs
                 ));
             } else {
