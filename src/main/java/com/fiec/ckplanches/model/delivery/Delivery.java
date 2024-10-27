@@ -1,6 +1,7 @@
 package com.fiec.ckplanches.model.delivery;
 
 import com.fiec.ckplanches.model.enums.Change;
+import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.order.Order;
 
 import jakarta.persistence.Column;
@@ -38,6 +39,10 @@ public class Delivery {
 
     @Column(name = "complemento")
     private String complement;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TrocoSimNao")

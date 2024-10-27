@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.fiec.ckplanches.DTO.DeliveryDTO;
-import com.fiec.ckplanches.DTO.DeliveryTableDTO;
 import com.fiec.ckplanches.DTO.OrderDTO;
 import com.fiec.ckplanches.DTO.OrderProductDTO;
 import com.fiec.ckplanches.DTO.OrderProductTableDTO;
@@ -36,14 +35,16 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final DeliveryRepository deliveryRepository;
+    private final DeliveryService deliveryService;
 
     public OrderService(ProductOrderRepository productOrderRepository, ProductSupplyRepository productSupplyRepository, OrderRepository orderRepository, ProductRepository productRepository,
-    DeliveryRepository deliveryRepository){
+    DeliveryRepository deliveryRepository, DeliveryService deliveryService){
         this.productOrderRepository = productOrderRepository;
         this.productSupplyRepository = productSupplyRepository;
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.deliveryRepository = deliveryRepository;
+        this.deliveryService = deliveryService;
     }
     
     public List<OrderTableDTO> listarPedidos(List<Order> orders){
@@ -58,7 +59,8 @@ public class OrderService {
 
     public OrderTableDTO criarPedido(OrderDTO orderDTO, DeliveryDTO deliveryDTO){
         Delivery delivery = null;
-        if(deliveryDTO != null) delivery = modificarDelivery(new Delivery(), deliveryDTO);
+        if(deliveryDTO != null) delivery = deliveryService.modificarDelivery(new Delivery(), deliveryDTO);
+        delivery.setStatus(Status.ATIVO);
         Order order = modificarOrder(new Order(), orderDTO, delivery);
         order = orderRepository.save(order);
         criarProductOrder(order, orderDTO.orderProductDTOs());
@@ -75,9 +77,9 @@ public class OrderService {
             order.setTotalValue(calcularValorTotal(order.getProductOrders()));
             Delivery delivery = order.getDelivery();
             if(delivery != null) {
-                delivery = modificarDelivery(order.getDelivery(), orderDTO.deliveryDTO());
+                delivery = deliveryService.modificarDelivery(order.getDelivery(), orderDTO.deliveryDTO());
             }
-            else delivery = modificarDelivery(new Delivery(), orderDTO.deliveryDTO());
+            else delivery = deliveryService.modificarDelivery(new Delivery(), orderDTO.deliveryDTO());
             deliveryRepository.save(delivery);
             order.setDelivery(delivery);
             order = orderRepository.save(order);
@@ -151,7 +153,7 @@ public class OrderService {
             order.getTotalValue(),
             order.getEndDatetime(),
             orderProductTableDTOs,
-            order.getDelivery() != null ? convertDeliveryToTableDTO(order.getDelivery()) : null
+            order.getDelivery() != null ? deliveryService.convertDeliveryToTableDTO(order.getDelivery()) : null
             );
     }
 
@@ -256,27 +258,6 @@ public class OrderService {
             supply.getQuantity(), 
             supply.getMinQuantity(), 
             supply.getMaxQuantity());
-    }
-
-    // Delivery
-
-    public Delivery modificarDelivery(Delivery delivery, DeliveryDTO deliveryDTO){
-        delivery.setMotoboy(deliveryDTO.motoboy());
-        delivery.setAddress(deliveryDTO.address());
-        delivery.setComplement(deliveryDTO.complement());
-        delivery.setChange(deliveryDTO.change());
-        delivery.setFee(deliveryDTO.fee());
-        return delivery;
-    }
-
-    public DeliveryTableDTO convertDeliveryToTableDTO(Delivery delivery){
-        return new DeliveryTableDTO(
-        delivery.getDeliveryId(),
-        delivery.getMotoboy(), 
-        delivery.getAddress(), 
-        delivery.getComplement(), 
-        delivery.getChange(), 
-        delivery.getFee());
     }
 
 }
