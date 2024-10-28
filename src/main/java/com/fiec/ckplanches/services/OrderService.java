@@ -59,8 +59,10 @@ public class OrderService {
 
     public OrderTableDTO criarPedido(OrderDTO orderDTO, DeliveryDTO deliveryDTO){
         Delivery delivery = null;
-        if(deliveryDTO != null) delivery = deliveryService.modificarDelivery(new Delivery(), deliveryDTO);
-        delivery.setStatus(Status.ATIVO);
+        if(deliveryDTO != null) {
+            delivery = deliveryService.modificarDelivery(new Delivery(), deliveryDTO);
+            delivery.setStatus(Status.ATIVO);
+        }
         Order order = modificarOrder(new Order(), orderDTO, delivery);
         order = orderRepository.save(order);
         criarProductOrder(order, orderDTO.orderProductDTOs());
