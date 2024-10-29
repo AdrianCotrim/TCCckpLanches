@@ -41,6 +41,9 @@ public class Lot {
     @Column(name = "data_validade", nullable = false)
     private LocalDateTime expirationDate;
 
+    @Column(name = "data_retirada")
+    private LocalDateTime dateOfWithdrawal;
+
     @Column(name = "quantidade", nullable = false)
     private Integer quantity;
 
