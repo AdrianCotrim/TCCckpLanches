@@ -2,6 +2,7 @@ package com.fiec.ckplanches.model.movement;
 
 import java.time.LocalDateTime;
 
+import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.enums.TypeMovement;
 import com.fiec.ckplanches.model.lot.Lot;
 import com.fiec.ckplanches.model.supply.Supply;
@@ -40,6 +41,10 @@ public class Movement {
     @Column(name = "tipo")
     @Enumerated(EnumType.STRING)
     private TypeMovement type;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     // @ManyToOne
     // @JoinColumn(name = "fk_fornecedor", nullable = true)
