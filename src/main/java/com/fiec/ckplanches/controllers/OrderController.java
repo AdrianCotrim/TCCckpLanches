@@ -86,12 +86,15 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/orderstatus/{orderStatus}")
-    public ResponseEntity<?> editarOrderStatus(@PathVariable int id, @PathVariable OrderStatus orderStatus, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> editarOrderStatus(@PathVariable int id, @PathVariable String orderStatus, @AuthenticationPrincipal UserDetails userDetails) {
         try{
             Optional<Order> orderOptional = dao.findById(id);
             if(orderOptional.isEmpty()) throw new Error("Não existe pedido com esse id!");
             Order order = orderOptional.get();
-            order.setOrderStatus(orderStatus);
+            if(orderStatus.toLowerCase() == "finalizado") order.setOrderStatus(OrderStatus.FINALIZADO);
+            else if(orderStatus.toLowerCase() == "pronto") order.setOrderStatus(OrderStatus.PRONTO);
+            if(orderStatus.toLowerCase() == "preparando") order.setOrderStatus(OrderStatus.PREPARANDO);
+    
             order = dao.save(order);
             logController.logAction(userDetails.getUsername(), "Editou o estado de um pedido", order.getOrderId());
             return ResponseEntity.ok(orderService.convertOrderToTableDTO(order));
