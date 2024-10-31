@@ -91,9 +91,10 @@ public class OrderController {
             Optional<Order> orderOptional = dao.findById(id);
             if(orderOptional.isEmpty()) throw new Error("Não existe pedido com esse id!");
             Order order = orderOptional.get();
-            if(orderStatus.toLowerCase() == "finalizado") order.setOrderStatus(OrderStatus.FINALIZADO);
-            else if(orderStatus.toLowerCase() == "pronto") order.setOrderStatus(OrderStatus.PRONTO);
-            if(orderStatus.toLowerCase() == "preparando") order.setOrderStatus(OrderStatus.PREPARANDO);
+            System.out.println(orderStatus);
+            
+
+            order.setOrderStatus(OrderStatus.valueOf(orderStatus.toUpperCase()));
     
             order = dao.save(order);
             logController.logAction(userDetails.getUsername(), "Editou o estado de um pedido", order.getOrderId());
