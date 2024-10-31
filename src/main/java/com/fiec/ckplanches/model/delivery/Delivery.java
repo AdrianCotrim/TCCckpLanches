@@ -40,6 +40,9 @@ public class Delivery {
     @Column(name = "complemento")
     private String complement;
 
+    @Column(name = "telefone")
+    private String telefone;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private Status status;

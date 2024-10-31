@@ -80,7 +80,6 @@ public class OrderController {
             logController.logAction(userDetails.getUsername(), "Atualizou um pedido", updateOrder.orderId());
             return ResponseEntity.ok(updateOrder);
         } catch(Exception e){
-            System.err.println("Erro ao criar o pedido: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -109,7 +108,7 @@ public class OrderController {
     public ResponseEntity<?> deletarPedido(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
         try{
             if(orderService.deletarPedido(id)){
-                logController.logAction(userDetails.getUsername(), "Criou um pedido", id);
+                logController.logAction(userDetails.getUsername(), "deletou um pedido", id);
                 return ResponseEntity.status(HttpStatusCode.valueOf(204)).build();
             }
             else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
