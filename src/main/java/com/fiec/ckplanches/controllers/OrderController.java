@@ -3,6 +3,8 @@ package com.fiec.ckplanches.controllers;
 import java.io.IOException;
 import java.util.List;
 
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -79,6 +81,22 @@ public class OrderController {
             return ResponseEntity.ok(updateOrder);
         } catch(Exception e){
             System.err.println("Erro ao criar o pedido: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/orderstatus/{orderStatus}")
+    public ResponseEntity<?> editarOrderStatus(@PathVariable int id, @PathVariable OrderStatus orderStatus, @AuthenticationPrincipal UserDetails userDetails) {
+        try{
+            Optional<Order> orderOptional = dao.findById(id);
+            if(orderOptional.isEmpty()) throw new Error("Não existe pedido com esse id!");
+            Order order = orderOptional.get();
+            order.setOrderStatus(orderStatus);
+            order = dao.save(order);
+            logController.logAction(userDetails.getUsername(), "Editou o estado de um pedido", order.getOrderId());
+            return ResponseEntity.ok(orderService.convertOrderToTableDTO(order));
+        } catch(Exception e){
+            System.err.println("Erro ao editar o pedido: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
