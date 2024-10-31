@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fiec.ckplanches.DTO.ValuesDTO;
+import com.fiec.ckplanches.model.enums.OrderStatus;
 import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.lot.Lot;
 import com.fiec.ckplanches.model.order.Order;
@@ -41,7 +42,7 @@ public class DashboardController {
 
             // Consultar o banco de dados
             List<Lot> lots = lotRepository.findByExpirationDateBetweenAndStatus(startDate, endDate, Status.ATIVO);
-            List<Order> orders = orderRepository.findByEndDatetimeBetweenAndStatus(startDate, endDate, Status.ATIVO);
+            List<Order> orders = orderRepository.findByEndDatetimeBetweenAndStatusAndOrderStatus(startDate, endDate, Status.ATIVO, OrderStatus.FINALIZADO);
 
 
             // Inicializar arrays para armazenar valores de gastos e ganhos

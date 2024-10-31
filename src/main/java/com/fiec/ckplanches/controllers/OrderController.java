@@ -2,7 +2,6 @@ package com.fiec.ckplanches.controllers;
 
 import java.io.IOException;
 import java.util.List;
-
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -76,6 +75,7 @@ public class OrderController {
     @PutMapping
     public ResponseEntity<?> atualizarPedido(@RequestBody OrderUpdateDTO orderUpdateDTO, @AuthenticationPrincipal UserDetails userDetails) {
         try{
+            System.out.println(orderUpdateDTO.id());
             OrderTableDTO updateOrder = orderService.atualizarPedido(orderUpdateDTO);
             logController.logAction(userDetails.getUsername(), "Atualizou um pedido", updateOrder.orderId());
             return ResponseEntity.ok(updateOrder);

@@ -15,7 +15,7 @@ import com.fiec.ckplanches.model.order.Order;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer>{   
     
-    List<Order> findByEndDatetimeBetweenAndStatus(LocalDateTime startDate, LocalDateTime endDate, Status status);
+    List<Order> findByEndDatetimeBetweenAndStatusAndOrderStatus(LocalDateTime startDate, LocalDateTime endDate, Status status, OrderStatus orderStatus);
     List<Order> findByStatus(Status status);
     List<Order> findByOrderStatus(OrderStatus orderStatus);
 }
