@@ -88,6 +88,16 @@ public class OrderService {
         return convertOrderToTableDTO(order);
     }
 
+    public OrderTableDTO editarItens(int id, List<OrderProductDTO> orderProductDTOs){
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if(orderOptional.isEmpty()) throw new IllegalArgumentException("Esse pedido não existe!");
+        Order order = orderOptional.get();
+        removeProductOrders(order);
+        criarProductOrder(order, orderProductDTOs);
+        order = orderRepository.save(order); 
+        return convertOrderToTableDTO(order);
+    }
+
     public boolean deletarPedido(int id){
         Optional<Order> orderOptional = orderRepository.findById(id);
         if(orderOptional.isPresent()){
@@ -177,8 +187,6 @@ public class OrderService {
         if(orderUpdateDTO.paymentMethod() != null)order.setPaymentMethod(orderUpdateDTO.paymentMethod());
         if(orderUpdateDTO.endDateTime() != null)order.setEndDatetime(orderUpdateDTO.endDateTime());
         if(orderUpdateDTO.exitDateTime() != null)order.setExitDatetime(orderUpdateDTO.exitDateTime());
-        removeProductOrders(order);
-        criarProductOrder(order, orderUpdateDTO.orderProductDTOs());
         return order;
     }
 

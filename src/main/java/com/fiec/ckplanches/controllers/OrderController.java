@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fiec.ckplanches.DTO.OrderProductDTO;
 import com.fiec.ckplanches.DTO.OrderRequestDTO;
 import com.fiec.ckplanches.DTO.OrderTableDTO;
 import com.fiec.ckplanches.DTO.OrderUpdateDTO;
@@ -102,6 +103,18 @@ public class OrderController {
         } catch(Exception e){
             System.err.println("Erro ao editar o pedido: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/itens")
+    public ResponseEntity<?> editarItens(@PathVariable int id, @RequestBody List<OrderProductDTO> orderProductDTOs) {
+        try {
+            OrderTableDTO orderTableDTO = orderService.editarItens(id, orderProductDTOs);
+            return ResponseEntity.ok().body(orderTableDTO);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Erro ao editar itens: "+e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().body("Erro inesperado no servidor: "+e.getMessage());
         }
     }
 
