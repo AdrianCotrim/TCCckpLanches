@@ -7,6 +7,9 @@ import com.fiec.ckplanches.model.supply.Supply;
 
 @Service
 public class SupplyService {
+
+
+    // Convert
     
     public SupplyTableDTO convertSupplyToTableDTO(Supply supply){
         return new SupplyTableDTO(supply.getId(), 
@@ -16,5 +19,6 @@ public class SupplyService {
         supply.getMinQuantity(), 
         supply.getMaxQuantity());
     }
+
 
 }
