@@ -1,5 +1,6 @@
 package com.fiec.ckplanches.DTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fiec.ckplanches.model.enums.ExitMethod;
@@ -9,8 +10,10 @@ public record OrderUpdateDTO(
     int id,
     OrderStatus orderStatus, 
     String customerName, 
-    ExitMethod exitMethod, 
-    String paymentMethod, 
+    ExitMethod exitMethod,
+    String paymentMethod,
+    LocalDateTime endDateTime,
+    LocalDateTime exitDateTime,
     List<OrderProductDTO> orderProductDTOs,
     DeliveryDTO deliveryDTO
 ) {

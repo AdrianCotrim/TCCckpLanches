@@ -176,6 +176,8 @@ public class OrderService {
         if(orderUpdateDTO.customerName() != null)order.setCustomerName(orderUpdateDTO.customerName());
         if(orderUpdateDTO.exitMethod() != null)order.setExitMethod(orderUpdateDTO.exitMethod());
         if(orderUpdateDTO.paymentMethod() != null)order.setPaymentMethod(orderUpdateDTO.paymentMethod());
+        if(orderUpdateDTO.endDateTime() != null)order.setEndDatetime(orderUpdateDTO.endDateTime());
+        if(orderUpdateDTO.exitDateTime() != null)order.setExitDatetime(orderUpdateDTO.exitDateTime());
         removeProductOrders(order);
         criarProductOrder(order, orderUpdateDTO.orderProductDTOs());
         return order;
