@@ -77,8 +77,9 @@ public class OrderService {
         if(order != null){
             modificarOrder(order, orderDTO);
             order.setTotalValue(calcularValorTotal(order.getProductOrders()));
-            Delivery delivery = order.getDelivery();
-            if(delivery != null) {
+            Delivery delivery = null;
+            if(orderDTO.deliveryDTO() != null) delivery = order.getDelivery();
+            if(delivery != null && orderDTO.deliveryDTO() != null) {
                 delivery = deliveryService.modificarDelivery(order.getDelivery(), orderDTO.deliveryDTO());
                 deliveryRepository.save(delivery);
             }
