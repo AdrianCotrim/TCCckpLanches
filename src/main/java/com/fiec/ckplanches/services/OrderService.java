@@ -80,8 +80,8 @@ public class OrderService {
             Delivery delivery = order.getDelivery();
             if(delivery != null) {
                 delivery = deliveryService.modificarDelivery(order.getDelivery(), orderDTO.deliveryDTO());
+                deliveryRepository.save(delivery);
             }
-            deliveryRepository.save(delivery);
             order.setDelivery(delivery);
             order = orderRepository.save(order);
         }
