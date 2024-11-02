@@ -157,6 +157,7 @@ public class LotService {
             lot.getId(), 
             lot.getExpirationDate(), 
             lot.getQuantity(), 
+            lot.getValue(),
             supplyService.convertSupplyToTableDTO(lot.getSupply()), 
            supplierService.convertSupplierToTableDTO(lot.getSupplier()));
     } 

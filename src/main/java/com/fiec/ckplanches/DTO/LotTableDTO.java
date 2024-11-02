@@ -7,6 +7,7 @@ public record LotTableDTO(
     int id,
     LocalDateTime expirationDate,
     int quantity,
+    double value,
     SupplyTableDTO supplyTableDTO,
     SupplierTableDTO supplierTableDTO
 ) {
