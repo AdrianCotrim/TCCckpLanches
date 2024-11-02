@@ -10,13 +10,16 @@ import com.fiec.ckplanches.model.supplier.Supplier;
 import com.fiec.ckplanches.repositories.SupplierRepository;
 import com.fiec.ckplanches.services.SupplierService;
 
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -51,7 +54,20 @@ public class SupplierController {
             return ResponseEntity.internalServerError().body("Ocorreu um erro inesperado: "+e.getMessage());
         }
     }
-    
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizarFornecedor(@PathVariable int id, @RequestBody SupplierDTO supplierDTO){
+        try {
+            SupplierTableDTO supplierTableDTO = service.atualizarFornecedor(id, supplierDTO);
+            return ResponseEntity.ok().body(supplierTableDTO);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().body("Erro ao atualizar fornecedor: "+e.getMessage());
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.internalServerError().body("Erro inesperado no servidor: "+e.getMessage());
+        }
+    }
     
 
 }

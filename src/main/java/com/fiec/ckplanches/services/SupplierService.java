@@ -39,6 +39,32 @@ public class SupplierService {
 
         return convertSupplierToTableDTO(supplier);
     }
+
+    public SupplierTableDTO atualizarFornecedor(int id, SupplierDTO supplierDTO){
+        //Verifica se o fornecedor existe
+        Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Esse fornecedor não existe"));
+
+        boolean existsCnpj = supplierRepository.existsByCnpj(supplierDTO.cnpj()); 
+        boolean existsEmail = supplierRepository.existsByEmail(supplierDTO.email());
+
+        // Verifica se já tem alguém com esse cnpj e email
+        if(existsCnpj) throw new IllegalArgumentException("Esse CNPJ já está cadastrado no sistema!");
+        if(existsEmail) throw new IllegalArgumentException("Esse EMAIL já está cadastrado no sistema!");
+
+        supplier = modificaSupplier(supplierDTO, supplier);
+
+        return convertSupplierToTableDTO(supplier);
+
+    }
+
+    public Supplier modificaSupplier(SupplierDTO supplierDTO, Supplier supplier){
+        if(supplierDTO.name() != null) supplier.setName(supplierDTO.name());
+        if(supplierDTO.email() != null) supplier.setEmail(supplierDTO.email());
+        if(supplierDTO.cnpj() != null) supplier.setCnpj(supplierDTO.cnpj());
+        if(supplierDTO.social() != null) supplier.setSocial(supplierDTO.social());
+        if(supplierDTO.address() != null) supplier.setAddress(supplierDTO.address());
+        return supplier;
+    }
     
     public SupplierTableDTO convertSupplierToTableDTO(Supplier supplier){
         if(supplier == null) return null;
