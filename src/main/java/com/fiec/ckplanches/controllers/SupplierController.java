@@ -68,6 +68,20 @@ public class SupplierController {
             return ResponseEntity.internalServerError().body("Erro inesperado no servidor: "+e.getMessage());
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> deletarFornecedor(@PathVariable int id){
+        try {
+            service.deleteFornecedor(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().body("Erro ao deletar fornecedor: "+e.getMessage());
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.internalServerError().body("Erro internal do servidor: "+e.getMessage());
+        }
+    }
     
 
 }

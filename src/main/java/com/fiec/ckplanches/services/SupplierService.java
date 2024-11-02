@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.fiec.ckplanches.DTO.SupplierDTO;
 import com.fiec.ckplanches.DTO.SupplierTableDTO;
+import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.supplier.Supplier;
 import com.fiec.ckplanches.repositories.SupplierRepository;
 
@@ -55,6 +56,12 @@ public class SupplierService {
 
         return convertSupplierToTableDTO(supplier);
 
+    }
+
+    public void deleteFornecedor(int id){
+        Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Esse fornecedor não existe!"));
+        supplier.setStatus(Status.INATIVO);
+        supplierRepository.save(supplier);
     }
 
     public Supplier modificaSupplier(SupplierDTO supplierDTO, Supplier supplier){
