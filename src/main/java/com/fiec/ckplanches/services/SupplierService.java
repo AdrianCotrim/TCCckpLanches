@@ -83,7 +83,9 @@ public class SupplierService {
         supplier.getEmail(), 
         supplier.getCnpj(), 
         supplier.getSocial(), 
-        supplier.getAddress());
+        supplier.getAddress(),
+        supplier.getTelefone()
+        );
     }
 
 }

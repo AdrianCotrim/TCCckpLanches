@@ -42,6 +42,9 @@ public class Supplier {
     @Column(name = "endereco", nullable = false)
     private String address;
 
+    @Column(name = "telefone", nullable = false)
+    private String telefone;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
