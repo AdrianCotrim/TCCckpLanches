@@ -64,6 +64,7 @@ public class MovementService {
                                                                                                               // da uma
                                                                                                               // Exception
         supply.setQuantity(supply.getQuantity() - movementCreateDTO.quantity()); // subtração da quantidade no insumo
+        supplyRepository.save(supply);
         if (lots != null && !lots.isEmpty()) {
             int quantidadeDiferenca = movementCreateDTO.quantity(); // Variavel que ira conter a quantidade que devera
                                                                     // ser tirada em cada lote

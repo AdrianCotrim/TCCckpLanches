@@ -47,7 +47,7 @@ public class MovementController {
             List<MovementTableDTO> movementTableDTOs = service.createMovement(movementCreateDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(movementTableDTOs);
         } catch (IllegalArgumentException erro){
-            return ResponseEntity.badRequest().body("Erro ao criar movimentação: "+erro.getMessage());
+            return ResponseEntity.badRequest().body(erro.getMessage());
         } catch(Exception erro){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro inesperado no servidor: "+erro.getMessage());
         }
