@@ -106,7 +106,7 @@ public class ProductController {
             logController.logAction(userDetails.getUsername(), "Criou um produto", produtoCriado.product_id());
             return ResponseEntity.status(HttpStatus.CREATED).body(produtoCriado);
         } catch(IOException erro){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao criar produto!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao criar produto: "+erro.getMessage());
         }
     }
 
