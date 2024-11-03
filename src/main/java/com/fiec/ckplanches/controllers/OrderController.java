@@ -1,6 +1,7 @@
 package com.fiec.ckplanches.controllers;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,10 +93,12 @@ public class OrderController {
             Optional<Order> orderOptional = dao.findById(id);
             if(orderOptional.isEmpty()) throw new Error("Não existe pedido com esse id!");
             Order order = orderOptional.get();
-            System.out.println(orderStatus);
-            
+            //System.out.println(orderStatus);
 
             order.setOrderStatus(OrderStatus.valueOf(orderStatus.toUpperCase()));
+
+            if(order.getOrderStatus() == OrderStatus.FINALIZADO) order.setEndDatetime(LocalDateTime.now());
+            else if(order.getOrderStatus() == OrderStatus.PRONTO) order.setExitDatetime(LocalDateTime.now());
     
             order = dao.save(order);
             logController.logAction(userDetails.getUsername(), "Editou o estado de um pedido", order.getOrderId());
