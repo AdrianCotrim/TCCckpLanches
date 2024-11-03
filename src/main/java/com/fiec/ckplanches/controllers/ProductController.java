@@ -113,7 +113,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @Secured("ADMIN")
-    public ResponseEntity<?> editarProduto(@RequestBody ProductCreateDTO produto, @PathVariable Integer id, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> editarProduto(@RequestBody ProductCreateDTO produto, @PathVariable Integer id, @RequestPart("imagem") MultipartFile imagem, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             Optional<Product> produtoExistente = dao.findById(id);
             List<SupplyTableDTO> supplyDTOs = new ArrayList<>();
@@ -123,6 +123,7 @@ public class ProductController {
                 produtoNovo.setProduct_value(produto.productValue());
                 produtoNovo.setDescription(produto.description());
                 produtoNovo.setCategory(produto.category());
+                productService.atualizarImagem(id, imagem);
 
                 //Deletar productSupplies anteriores
                 productSupplyRepository.deleteByProduct(produtoNovo);
