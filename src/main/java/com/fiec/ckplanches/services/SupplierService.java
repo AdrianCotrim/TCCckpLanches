@@ -21,6 +21,9 @@ public class SupplierService {
 
     public List<SupplierTableDTO> listarFornecedores(List<Supplier> suppliers){
         List<SupplierTableDTO> supplierTableDTOs = new ArrayList<>();
+        for (Supplier supplier : suppliers) {
+            supplierTableDTOs.add(convertSupplierToTableDTO(supplier));
+        }
         return supplierTableDTOs;
     }
 
