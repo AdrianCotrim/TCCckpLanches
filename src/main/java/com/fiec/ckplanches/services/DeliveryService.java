@@ -47,7 +47,6 @@ public class DeliveryService {
         delivery.setMotoboy(deliveryDTO.motoboy());
         delivery.setAddress(deliveryDTO.address());
         delivery.setComplement(deliveryDTO.complement());
-        delivery.setTelefone(deliveryDTO.telefone());
         delivery.setChange(deliveryDTO.change());
         delivery.setFee(deliveryDTO.fee());
         return delivery;
@@ -59,7 +58,6 @@ public class DeliveryService {
         delivery.getMotoboy(), 
         delivery.getAddress(), 
         delivery.getComplement(), 
-        delivery.getTelefone(),
         delivery.getChange(), 
         delivery.getFee());
     }

@@ -7,7 +7,6 @@ public record DeliveryTableDTO(
     String motoboy,
     String address,
     String complement,
-    String telefone,
     Change change,
     Double fee
 ) {

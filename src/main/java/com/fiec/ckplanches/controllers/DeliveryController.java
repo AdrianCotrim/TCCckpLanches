@@ -45,6 +45,7 @@ public class DeliveryController {
             logController.logAction(userDetails.getUsername(), "Deletou um delivery", id);
             return ResponseEntity.ok().build();
         } catch(Exception erro){
+            System.out.println(erro);
             return ResponseEntity.badRequest().body("Erro ao deletar delivery: "+erro.getMessage());
         }
     }
