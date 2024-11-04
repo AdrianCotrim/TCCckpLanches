@@ -34,6 +34,7 @@ import com.fiec.ckplanches.DTO.ProductCreateDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
 import com.fiec.ckplanches.DTO.SupplyTableDTO;
 import com.fiec.ckplanches.model.enums.Category;
+import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.product.Product;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
 import com.fiec.ckplanches.model.supply.Supply;
@@ -67,7 +68,7 @@ public class ProductController {
 
     @GetMapping
     public List<ProductTableDTO> listarProdutos() throws IOException {
-        List<Product> products = dao.findAll();
+        List<Product> products = dao.findByStatus(Status.ATIVO);
         List<ProductTableDTO> productDTOs = new ArrayList<>();
 
         for (Product element : products) {

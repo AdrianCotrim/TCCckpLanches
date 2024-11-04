@@ -12,6 +12,7 @@ public record OrderTableDTO(Integer orderId,
     ExitMethod exitMethod,
     String paymentMethod,
     Double totalValue,
+    Double subValue,
     LocalDateTime endDateTime,
     List<OrderProductTableDTO> orderProductTableDTOs,
     DeliveryTableDTO deliveryDTO

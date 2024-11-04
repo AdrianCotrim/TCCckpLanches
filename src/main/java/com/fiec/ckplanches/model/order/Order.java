@@ -57,7 +57,11 @@ public class Order {
     @Column(name = "forma_pagamento", nullable = false, length = 50)
     private String paymentMethod;
 
+    @Column(name = "valor_total")
     private Double totalValue;
+
+    @Column(name = "sub_total")
+    private Double subValue;
 
     @Column(name = "data_hora_saida", nullable = false)
     private LocalDateTime exitDatetime;

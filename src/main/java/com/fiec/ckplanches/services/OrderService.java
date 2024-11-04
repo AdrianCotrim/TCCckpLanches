@@ -67,7 +67,9 @@ public class OrderService {
         order = orderRepository.save(order);
         criarProductOrder(order, orderDTO.orderProductDTOs());
         order.setStatus(Status.ATIVO);
-        order.setTotalValue(calcularValorTotal(order.getProductOrders()));
+        order.setSubValue(calcularValorTotal(order.getProductOrders()));
+        order.setTotalValue(order.getSubValue());
+        if(order.getDelivery() != null) order.setTotalValue(order.getTotalValue()+order.getDelivery().getFee());
         order = orderRepository.save(order);
         return convertOrderToTableDTO(orderRepository.findById(order.getOrderId()).orElse(order));
     }
@@ -76,7 +78,8 @@ public class OrderService {
         Order order = orderRepository.findById(orderDTO.id()).orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado"));
         if(order != null){
             modificarOrder(order, orderDTO);
-            order.setTotalValue(calcularValorTotal(order.getProductOrders()));
+            order.setSubValue(calcularValorTotal(order.getProductOrders()));
+            order.setTotalValue(order.getSubValue());
             Delivery delivery = null;
             if(orderDTO.deliveryDTO() != null) delivery = order.getDelivery();
             if(delivery != null && orderDTO.deliveryDTO() != null) {
@@ -84,6 +87,7 @@ public class OrderService {
                 deliveryRepository.save(delivery);
             }
             order.setDelivery(delivery);
+            if(order.getDelivery() != null) order.setTotalValue(order.getTotalValue()+order.getDelivery().getFee());
             order = orderRepository.save(order);
         }
         return convertOrderToTableDTO(order);
@@ -95,6 +99,9 @@ public class OrderService {
         Order order = orderOptional.get();
         removeProductOrders(order);
         criarProductOrder(order, orderProductDTOs);
+        order.setSubValue(calcularValorTotal(order.getProductOrders()));
+        order.setTotalValue(order.getSubValue());
+        if(order.getDelivery() != null) order.setTotalValue(order.getTotalValue()+order.getDelivery().getFee());
         order = orderRepository.save(order); 
         return convertOrderToTableDTO(order);
     }
@@ -164,6 +171,7 @@ public class OrderService {
             order.getExitMethod(),
             order.getPaymentMethod(),
             order.getTotalValue(),
+            order.getSubValue(),
             order.getEndDatetime(),
             orderProductTableDTOs,
             order.getDelivery() != null ? deliveryService.convertDeliveryToTableDTO(order.getDelivery()) : null

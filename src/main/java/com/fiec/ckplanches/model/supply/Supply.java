@@ -3,6 +3,7 @@ package com.fiec.ckplanches.model.supply;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.lot.Lot;
 import com.fiec.ckplanches.model.movement.Movement;
 import com.fiec.ckplanches.model.productSupply.ProductSupply;
@@ -46,6 +47,8 @@ public class Supply {
 
     @Column(name = "quantidade_maxima", nullable = false)
     private int maxQuantity;
+
+    private Status status;
 
     @OneToMany(mappedBy = "supply", cascade = CascadeType.REMOVE)
     private List<Movement> movements = new ArrayList<>();
