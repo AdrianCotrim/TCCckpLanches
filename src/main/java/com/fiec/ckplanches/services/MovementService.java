@@ -88,6 +88,10 @@ public class MovementService {
                     break;
                 }
             }
+        } else {
+            Movement movement = new Movement(LocalDateTime.now(), movementCreateDTO.quantity(), TypeMovement.SAIDA, null,
+                            supply);
+                    movementTableDTOs.add(convertMovementToTableDTO(movementRepository.save(movement)));
         }
         return movementTableDTOs;
     }
@@ -149,7 +153,7 @@ public class MovementService {
                 movement.getMovementDate(),
                 movement.getQuantity(),
                 movement.getType(),
-                lotService.convertLotToTableDTO(movement.getLot()),
+                movement.getLot() != null ? lotService.convertLotToTableDTO(movement.getLot()):null,
                 supplyService.convertSupplyToTableDTO(movement.getSupply()));
     }
 

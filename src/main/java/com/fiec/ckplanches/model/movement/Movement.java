@@ -64,6 +64,7 @@ public class Movement {
         this.type = type;
         this.lot = lot;
         this.supply = supply;
+        this.status = Status.ATIVO;
     }
 
     public Movement(LocalDateTime movementDate, int quantity, TypeMovement type, Supply supply) {
@@ -71,6 +72,7 @@ public class Movement {
         this.quantity = quantity;
         this.type = type;
         this.supply = supply;
+        this.status = Status.ATIVO;
     }
 
     

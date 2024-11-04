@@ -20,6 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fiec.ckplanches.DTO.ProductCreateDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
 import com.fiec.ckplanches.DTO.SupplyTableDTO;
@@ -42,6 +44,8 @@ import com.fiec.ckplanches.repositories.ProductRepository;
 import com.fiec.ckplanches.repositories.ProductSupplyRepository;
 import com.fiec.ckplanches.repositories.SupplyRepository;
 import com.fiec.ckplanches.services.ProductService;
+
+import jakarta.transaction.Transactional;
 
 
 @RestController
@@ -112,52 +116,71 @@ public class ProductController {
         }
     }
 
-    @PutMapping("/{id}")
+    @Transactional
+   @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Secured("ADMIN")
-    public ResponseEntity<?> editarProduto(@RequestBody ProductCreateDTO produto, @PathVariable Integer id, @RequestPart("imagem") MultipartFile imagem, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> editarProduto(
+        @RequestPart("produto") String produtoJson,  // JSON como string
+        @RequestPart(value = "imagem", required = false) MultipartFile imagem,
+        @PathVariable Integer id,
+        @AuthenticationPrincipal UserDetails userDetails) {
+
         try {
+            // Converte o JSON recebido para ProductCreateDTO
+            ObjectMapper objectMapper = new ObjectMapper();
+            ProductCreateDTO produto = objectMapper.readValue(produtoJson, ProductCreateDTO.class);
+
             Optional<Product> produtoExistente = dao.findById(id);
             List<SupplyTableDTO> supplyDTOs = new ArrayList<>();
+
             if (produtoExistente.isPresent()) {
                 Product produtoNovo = produtoExistente.get();
+
+                // Atualizar os dados do produto
                 produtoNovo.setProductName(produto.productName());
                 produtoNovo.setProduct_value(produto.productValue());
                 produtoNovo.setDescription(produto.description());
                 produtoNovo.setCategory(produto.category());
-                productService.atualizarImagem(id, imagem);
 
-                //Deletar productSupplies anteriores
-                productSupplyRepository.deleteByProduct(produtoNovo);
-
-                //Vincular os insumos ao produto
-                if(produto.supplieNames() != null)
-                for(String name:produto.supplieNames()){
-                    Supply supplyOptional = supplyRepository.findByName(name);
-                    if(supplyOptional != null)
-                    productService.criarProductSupply(produtoNovo, supplyOptional);
+                if (imagem != null && !imagem.isEmpty()) {
+                    productService.atualizarImagem(id, imagem);
                 }
 
-                produtoNovo = dao.save(produtoNovo);
+                // Deletar e recriar os insumos relacionados
+                productSupplyRepository.deleteByProduct(produtoNovo);
+                if (produto.supplieNames() != null) {
+                    for (String name : produto.supplieNames()) {
+                        Supply supplyOptional = supplyRepository.findByName(name);
+                        if (supplyOptional != null) {
+                            productService.criarProductSupply(produtoNovo, supplyOptional);
+                        }
+                    }
+                }
 
+                System.out.println(produtoNovo);
+                produtoNovo = dao.save(produtoNovo);
                 logController.logAction(userDetails.getUsername(), "Atualizou um produto", id);
 
+                // Obter os insumos atualizados
                 List<ProductSupply> productSupplies = productSupplyRepository.findByProduct(produtoNovo);
-                for(ProductSupply productSupply:productSupplies){
+                for (ProductSupply productSupply : productSupplies) {
                     Supply supply = productSupply.getSupply();
                     supplyDTOs.add(new SupplyTableDTO(
                         supply.getId(),
-                        supply.getName(), 
+                        supply.getName(),
                         supply.getDescription(),
-                        supply.getQuantity(), 
-                        supply.getMinQuantity(), 
-                        supply.getMaxQuantity()));
+                        supply.getQuantity(),
+                        supply.getMinQuantity(),
+                        supply.getMaxQuantity()
+                    ));
                 }
-                
+
+                // Retorna a resposta com os dados atualizados
                 return ResponseEntity.ok(new ProductTableDTO(
                     produtoNovo.getProduct_id(),
                     produtoNovo.getProductName(),
                     produtoNovo.getProduct_value(),
-                    produtoNovo.getImagemUrl(), // Nome da imagem
+                    produtoNovo.getImagemUrl(),
                     produtoNovo.getDescription(),
                     produtoNovo.getCategory(),
                     supplyDTOs
@@ -166,9 +189,11 @@ public class ProductController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Este Produto não existe");
             }
         } catch (Exception erro) {
+            System.out.println(erro);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro inesperado no servidor: " + erro.getMessage());
         }
     }
+
 
     @DeleteMapping("/{id}")
     @Secured("ADMIN")
