@@ -55,12 +55,13 @@ public class Supplier {
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
     private List<Lot> lots;
 
-    public Supplier(String name, String email, String cnpj, String social, String address) {
+    public Supplier(String name, String email, String cnpj, String social, String address, String telefone) {
         this.name = name;
         this.email = email;
         this.cnpj = cnpj;
         this.social = social;
         this.address = address;
+        this.telefone = telefone;
         this.status = Status.ATIVO;
     }
 

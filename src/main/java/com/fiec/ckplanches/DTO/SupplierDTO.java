@@ -5,7 +5,8 @@ public record SupplierDTO(
     String email,
     String cnpj,
     String social,
-    String address
+    String address,
+    String telefone
 ) {
     
 }

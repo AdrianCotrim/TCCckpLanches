@@ -3,6 +3,7 @@ package com.fiec.ckplanches.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,9 @@ public class SupplierService {
         if(existsCnpj) throw new IllegalArgumentException("Esse CNPJ já está cadastrado no sistema!");
         if(existsEmail) throw new IllegalArgumentException("Esse EMAIL já está cadastrado no sistema!");
 
-        Supplier supplier = new Supplier(supplierDTO.name(), supplierDTO.email(), supplierDTO.cnpj(), supplierDTO.social(), supplierDTO.address());
+
+        Supplier supplier = new Supplier(supplierDTO.name(), supplierDTO.email(), supplierDTO.cnpj(), supplierDTO.social(), supplierDTO.address(), supplierDTO.telefone());
+
 
         supplier = supplierRepository.save(supplier);
 
@@ -48,14 +51,16 @@ public class SupplierService {
         //Verifica se o fornecedor existe
         Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Esse fornecedor não existe"));
 
-        boolean existsCnpj = supplierRepository.existsByCnpj(supplierDTO.cnpj()); 
-        boolean existsEmail = supplierRepository.existsByEmail(supplierDTO.email());
+        Optional<Supplier> cnpjOptional = supplierRepository.findByCnpj(supplierDTO.cnpj()); 
+        Optional<Supplier> emailOptional = supplierRepository.findByEmail(supplierDTO.email());
 
         // Verifica se já tem alguém com esse cnpj e email
-        if(existsCnpj) throw new IllegalArgumentException("Esse CNPJ já está cadastrado no sistema!");
-        if(existsEmail) throw new IllegalArgumentException("Esse EMAIL já está cadastrado no sistema!");
+        if(cnpjOptional.isPresent() && cnpjOptional.get().getId() != id) throw new IllegalArgumentException("Esse CNPJ já está cadastrado no sistema!");
+        if(emailOptional.isPresent() && emailOptional.get().getId() != id) throw new IllegalArgumentException("Esse EMAIL já está cadastrado no sistema!");
 
         supplier = modificaSupplier(supplierDTO, supplier);
+
+        supplierRepository.save(supplier);
 
         return convertSupplierToTableDTO(supplier);
 

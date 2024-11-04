@@ -45,7 +45,6 @@ public class SupplierController {
     @PostMapping
     public ResponseEntity<?> criarFornecedor(@RequestBody SupplierDTO supplierDTO) {
         try {
-
             SupplierTableDTO supplierTableDTO = service.criarFornecedor(supplierDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(supplierTableDTO);
 
