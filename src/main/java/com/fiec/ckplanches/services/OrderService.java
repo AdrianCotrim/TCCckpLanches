@@ -81,9 +81,13 @@ public class OrderService {
             order.setSubValue(calcularValorTotal(order.getProductOrders()));
             order.setTotalValue(order.getSubValue());
             Delivery delivery = null;
-            if(orderDTO.deliveryDTO() != null) delivery = order.getDelivery();
+            delivery = order.getDelivery();
             if(delivery != null && orderDTO.deliveryDTO() != null) {
                 delivery = deliveryService.modificarDelivery(order.getDelivery(), orderDTO.deliveryDTO());
+                deliveryRepository.save(delivery);
+            } else if(orderDTO.deliveryDTO() != null){
+                delivery = deliveryService.modificarDelivery(new Delivery(), orderDTO.deliveryDTO());
+                delivery.setStatus(Status.ATIVO);
                 deliveryRepository.save(delivery);
             }
             order.setDelivery(delivery);

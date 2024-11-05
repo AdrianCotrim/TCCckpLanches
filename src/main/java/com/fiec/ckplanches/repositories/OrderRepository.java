@@ -19,6 +19,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer>{
     
     List<Order> findByEndDatetimeBetweenAndStatusAndOrderStatus(LocalDateTime startDate, LocalDateTime endDate, Status status, OrderStatus orderStatus);
     List<Order> findByStatus(Status status);
-    List<Order> findByOrderStatus(OrderStatus orderStatus);
+    List<Order> findByOrderStatusAndStatus(OrderStatus orderStatus, Status status);
     Order findByDelivery(Delivery delivery);
 }

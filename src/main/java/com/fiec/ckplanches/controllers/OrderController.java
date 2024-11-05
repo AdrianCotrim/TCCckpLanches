@@ -56,7 +56,7 @@ public class OrderController {
 
     @GetMapping("/finalizados")
     public List<OrderTableDTO> getPedidosFinalizados() {
-        List<Order> orders = dao.findByOrderStatus(OrderStatus.FINALIZADO);
+        List<Order> orders = dao.findByOrderStatusAndStatus(OrderStatus.FINALIZADO, Status.ATIVO);
         return orderService.listarPedidos(orders);
     }
     
