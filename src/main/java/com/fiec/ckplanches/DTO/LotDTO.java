@@ -7,6 +7,7 @@ public record LotDTO(
     Integer supplierId,
     Integer quantity, 
     LocalDateTime expirationDate,
+    LocalDateTime loteDate,
     double value
 ) {
     

@@ -61,7 +61,8 @@ public class LotService {
     
         // Criação do lote
         Lot lot = new Lot(
-            lotDTO.expirationDate(), 
+            lotDTO.expirationDate(),
+            lotDTO.loteDate(), 
             lotDTO.quantity(),
             supply, 
             supplier,
@@ -97,7 +98,8 @@ public class LotService {
         // Atualizando o lote
         Lot lotAtualizado = new Lot(
             lot.getId(), 
-            lotDTO.expirationDate(), 
+            lotDTO.expirationDate(),
+            lotDTO.loteDate(), 
             lotDTO.quantity(), 
             lotDTO.value(), 
             supply, supplier
@@ -155,7 +157,8 @@ public class LotService {
 
         return new LotTableDTO(
             lot.getId(), 
-            lot.getExpirationDate(), 
+            lot.getExpirationDate(),
+            lot.getDateOfWithdrawal(), 
             lot.getQuantity(), 
             lot.getValue(),
             supplyService.convertSupplyToTableDTO(lot.getSupply()), 

@@ -65,16 +65,17 @@ public class Lot {
     @OneToMany(mappedBy = "lot", cascade = CascadeType.ALL)
     private List<Movement> movements;
 
-    public Lot(LocalDateTime expirationDate, Integer quantity, Supply supply, Supplier supplier, double value) {
+    public Lot(LocalDateTime expirationDate, LocalDateTime dateOfWithdrawal,Integer quantity, Supply supply, Supplier supplier, double value) {
         this.expirationDate = expirationDate;
         this.quantity = quantity;
         this.value = value;
         this.supply = supply;
         this.supplier = supplier;
+        this.dateOfWithdrawal = dateOfWithdrawal;
         this.status = Status.ATIVO;
     }
 
-    public Lot(Integer id, LocalDateTime expirationDate, Integer quantity, double value, Supply supply,
+    public Lot(Integer id, LocalDateTime expirationDate, LocalDateTime dateOfWithdrawal,Integer quantity, double value, Supply supply,
             Supplier supplier) {
         this.id = id;
         this.expirationDate = expirationDate;
@@ -82,6 +83,7 @@ public class Lot {
         this.value = value;
         this.supply = supply;
         this.supplier = supplier;
+        this.dateOfWithdrawal = dateOfWithdrawal;
         this.status = Status.ATIVO;
     }
     

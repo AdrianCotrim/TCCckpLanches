@@ -41,9 +41,8 @@ public class DashboardController {
             LocalDateTime startDate = endDate.minusDays(LocalDateTime.now().getDayOfWeek().getValue()+1);
 
             // Consultar o banco de dados
-            List<Lot> lots = lotRepository.findByExpirationDateBetweenAndStatus(startDate, endDate, Status.ATIVO);
+            List<Lot> lots = lotRepository.findByDateOfWithdrawalBetweenAndStatus(startDate, endDate, Status.ATIVO);
             List<Order> orders = orderRepository.findByEndDatetimeBetweenAndStatusAndOrderStatus(startDate, endDate, Status.ATIVO, OrderStatus.FINALIZADO);
-
 
             // Inicializar arrays para armazenar valores de gastos e ganhos
             double[] spents = new double[7]; // De domingo (0) a sábado (6)

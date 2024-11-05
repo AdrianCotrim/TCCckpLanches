@@ -18,6 +18,7 @@ import com.fiec.ckplanches.model.enums.Status;
 public interface LotRepository extends JpaRepository<Lot, Integer>{
 
     List<Lot> findByExpirationDateBetweenAndStatus(LocalDateTime startDate, LocalDateTime endDate, Status status);
+    List<Lot> findByDateOfWithdrawalBetweenAndStatus(LocalDateTime startDate, LocalDateTime endDate, Status status);
     List<Lot> findBySupplyId(int supplyId);
     List<Lot> findBySupplyIdOrderByExpirationDate(int supplyId); //Começa do mais perto de hoje
     List<Lot> findBySupplier(Supplier supplier);

@@ -1,5 +1,6 @@
 package com.fiec.ckplanches.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import com.fiec.ckplanches.DTO.OrderUpdateDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
 import com.fiec.ckplanches.DTO.SupplyTableDTO;
 import com.fiec.ckplanches.model.delivery.Delivery;
+import com.fiec.ckplanches.model.enums.OrderStatus;
 import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.order.Order;
 import com.fiec.ckplanches.model.product.Product;
@@ -198,7 +200,13 @@ public class OrderService {
         if(orderUpdateDTO.customerName() != null)order.setCustomerName(orderUpdateDTO.customerName());
         if(orderUpdateDTO.exitMethod() != null)order.setExitMethod(orderUpdateDTO.exitMethod());
         if(orderUpdateDTO.paymentMethod() != null)order.setPaymentMethod(orderUpdateDTO.paymentMethod());
+        if(orderUpdateDTO.orderStatus() == OrderStatus.FINALIZADO){
+            order.setEndDatetime(LocalDateTime.now());
+        } else
         if(orderUpdateDTO.endDateTime() != null)order.setEndDatetime(orderUpdateDTO.endDateTime());
+        if(orderUpdateDTO.orderStatus() == OrderStatus.PRONTO){
+            order.setExitDatetime(LocalDateTime.now());
+        } else
         if(orderUpdateDTO.exitDateTime() != null)order.setExitDatetime(orderUpdateDTO.exitDateTime());
         return order;
     }
