@@ -137,10 +137,10 @@ public class ProductController {
                 Product produtoNovo = produtoExistente.get();
 
                 // Atualizar os dados do produto
-                produtoNovo.setProductName(produto.productName());
-                produtoNovo.setProduct_value(produto.productValue());
-                produtoNovo.setDescription(produto.description());
-                produtoNovo.setCategory(produto.category());
+                if(produto.productName() != null)produtoNovo.setProductName(produto.productName());
+                if(produto.productValue() != null)produtoNovo.setProduct_value(produto.productValue());
+                if(produto.description() != null)produtoNovo.setDescription(produto.description());
+                if(produto.category() != null)produtoNovo.setCategory(produto.category());
 
                 if (imagem != null && !imagem.isEmpty()) {
                     productService.atualizarImagem(id, imagem);

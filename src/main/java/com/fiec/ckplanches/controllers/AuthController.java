@@ -1,14 +1,5 @@
 package com.fiec.ckplanches.controllers;
 
-import com.fiec.ckplanches.DTO.AuthenticationDTO;
-import com.fiec.ckplanches.DTO.LoginResponseDTO;
-import com.fiec.ckplanches.DTO.RegisterDTO;
-import com.fiec.ckplanches.model.enums.Status;
-import com.fiec.ckplanches.model.user.StatusConta;
-import com.fiec.ckplanches.model.user.User;
-import com.fiec.ckplanches.repositories.UserRepository;
-import com.fiec.ckplanches.services.TokenService;
-
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +8,20 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fiec.ckplanches.DTO.AuthenticationDTO;
+import com.fiec.ckplanches.DTO.LoginResponseDTO;
+import com.fiec.ckplanches.DTO.RegisterDTO;
+import com.fiec.ckplanches.model.enums.Status;
+import com.fiec.ckplanches.model.user.StatusConta;
+import com.fiec.ckplanches.model.user.User;
+import com.fiec.ckplanches.repositories.UserRepository;
+import com.fiec.ckplanches.services.TokenService;
 
 @RestController
 @CrossOrigin("*")
@@ -44,8 +48,9 @@ public class AuthController {
     
             // Verifica se ele está ativo
     
-            if(user.getStatusConta() != StatusConta.ATIVO || user.getStatus() != Status.ATIVO)
-            return ResponseEntity.badRequest().body("Usuário desativado pelo administrador!");
+            if(user.getStatusConta() != StatusConta.ATIVO || user.getStatus() != Status.ATIVO){
+                return ResponseEntity.badRequest().body("Usuário desativado pelo administrador!");
+            }
     
             var usernamePassowrd = new UsernamePasswordAuthenticationToken(login.username(), login.userPassword());
             var auth = this.authenticationManager.authenticate(usernamePassowrd);
