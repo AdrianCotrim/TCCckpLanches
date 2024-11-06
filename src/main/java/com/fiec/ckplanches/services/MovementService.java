@@ -89,9 +89,11 @@ public class MovementService {
                 }
             }
         } else {
-            Movement movement = new Movement(LocalDateTime.now(), movementCreateDTO.quantity(), TypeMovement.SAIDA, null,
+            if((movementCreateDTO.quantity() > 0)){
+                Movement movement = new Movement(LocalDateTime.now(), movementCreateDTO.quantity(), TypeMovement.SAIDA, null,
                             supply);
                     movementTableDTOs.add(convertMovementToTableDTO(movementRepository.save(movement)));
+            }  
         }
         return movementTableDTOs;
     }
