@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -51,6 +52,7 @@ public class OrderController {
     @GetMapping
     public List<OrderTableDTO> listarPedidos() throws IOException {
         List<Order> orders = dao.findByStatus(Status.ATIVO);
+        orders = orders.stream().filter((order) -> order.getOrderStatus() != OrderStatus.FINALIZADO).collect(Collectors.toList());
         return orderService.listarPedidos(orders);
     }
 
