@@ -92,6 +92,10 @@ public class OrderService {
                 delivery.setStatus(Status.ATIVO);
                 deliveryRepository.save(delivery);
             }
+
+            if(orderDTO.deliveryDTO() == null && order.getDelivery() != null) {
+                deliveryService.deletarDelivery(order.getDelivery().getDeliveryId());
+            }
             order.setDelivery(delivery);
             if(order.getDelivery() != null) order.setTotalValue(order.getTotalValue()+order.getDelivery().getFee());
             order = orderRepository.save(order);
@@ -203,11 +207,12 @@ public class OrderService {
         if(orderUpdateDTO.orderStatus() == OrderStatus.FINALIZADO){
             order.setEndDatetime(LocalDateTime.now());
         } else
-        if(orderUpdateDTO.endDateTime() != null)order.setEndDatetime(orderUpdateDTO.endDateTime());
+        if(orderUpdateDTO.endDateTime() != null){
+            order.setEndDatetime(orderUpdateDTO.endDateTime());
+        }
         if(orderUpdateDTO.orderStatus() == OrderStatus.PRONTO){
             order.setExitDatetime(LocalDateTime.now());
-        } else
-        if(orderUpdateDTO.exitDateTime() != null)order.setExitDatetime(orderUpdateDTO.exitDateTime());
+        } else if(orderUpdateDTO.exitDateTime() != null)order.setExitDatetime(orderUpdateDTO.exitDateTime());
         return order;
     }
 
