@@ -16,6 +16,7 @@ import com.fiec.ckplanches.DTO.OrderUpdateDTO;
 import com.fiec.ckplanches.DTO.ProductTableDTO;
 import com.fiec.ckplanches.DTO.SupplyTableDTO;
 import com.fiec.ckplanches.model.delivery.Delivery;
+import com.fiec.ckplanches.model.enums.ExitMethod;
 import com.fiec.ckplanches.model.enums.OrderStatus;
 import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.model.order.Order;
@@ -83,7 +84,7 @@ public class OrderService {
             order.setSubValue(calcularValorTotal(order.getProductOrders()));
             order.setTotalValue(order.getSubValue());
             Delivery delivery = null;
-            delivery = order.getDelivery();
+            if(orderDTO.exitMethod() != ExitMethod.RETIRADA)delivery = order.getDelivery();
             if(delivery != null && orderDTO.deliveryDTO() != null) {
                 delivery = deliveryService.modificarDelivery(order.getDelivery(), orderDTO.deliveryDTO());
                 deliveryRepository.save(delivery);
@@ -94,10 +95,14 @@ public class OrderService {
             }
 
             if(orderDTO.deliveryDTO() == null && order.getDelivery() != null) {
-                deliveryService.deletarDelivery(order.getDelivery().getDeliveryId());
+                Delivery deliveryDelete = order.getDelivery();
+                deliveryDelete.setStatus(Status.INATIVO);
+                deliveryRepository.save(deliveryDelete);
+                order.setDelivery(null);
+                order = orderRepository.save(order);
             }
             order.setDelivery(delivery);
-            if(order.getDelivery() != null) order.setTotalValue(order.getTotalValue()+order.getDelivery().getFee());
+            if(order.getDelivery() != null) order.setTotalValue((order.getTotalValue()+order.getDelivery().getFee()));
             order = orderRepository.save(order);
         }
         return convertOrderToTableDTO(order);
