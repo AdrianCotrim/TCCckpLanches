@@ -36,7 +36,6 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST,"/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/produtos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/produtos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/user/role").authenticated() // Protege o endpoint
                         .requestMatchers("/login","/loginPage/**", "/css/**", "/script/**", "/img/**").permitAll()
