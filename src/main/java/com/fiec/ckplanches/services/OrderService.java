@@ -70,9 +70,9 @@ public class OrderService {
         order = orderRepository.save(order);
         criarProductOrder(order, orderDTO.orderProductDTOs());
         order.setStatus(Status.ATIVO);
-        order.setSubValue(calcularValorTotal(order.getProductOrders()));
+        order.setSubValue(calcularSubTotal(order.getProductOrders()));
         order.setTotalValue(order.getSubValue());
-        if(order.getDelivery() != null) order.setTotalValue(order.getTotalValue()+order.getDelivery().getFee());
+        if(order.getDelivery() != null) order.setTotalValue(calcularValorTotal(order, order.getDelivery().getFee()));
         order = orderRepository.save(order);
         return convertOrderToTableDTO(orderRepository.findById(order.getOrderId()).orElse(order));
     }
@@ -81,7 +81,7 @@ public class OrderService {
         Order order = orderRepository.findById(orderDTO.id()).orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado"));
         if(order != null){
             modificarOrder(order, orderDTO);
-            order.setSubValue(calcularValorTotal(order.getProductOrders()));
+            order.setSubValue(calcularSubTotal(order.getProductOrders()));
             order.setTotalValue(order.getSubValue());
             Delivery delivery = null;
             if(orderDTO.exitMethod() != ExitMethod.RETIRADA)delivery = order.getDelivery();
@@ -102,7 +102,7 @@ public class OrderService {
                 order = orderRepository.save(order);
             }
             order.setDelivery(delivery);
-            if(order.getDelivery() != null) order.setTotalValue((order.getTotalValue()+order.getDelivery().getFee()));
+            if(order.getDelivery() != null) order.setTotalValue(calcularValorTotal(order, order.getDelivery().getFee()));
             order = orderRepository.save(order);
         }
         return convertOrderToTableDTO(order);
@@ -114,9 +114,9 @@ public class OrderService {
         Order order = orderOptional.get();
         removeProductOrders(order);
         criarProductOrder(order, orderProductDTOs);
-        order.setSubValue(calcularValorTotal(order.getProductOrders()));
+        order.setSubValue(calcularSubTotal(order.getProductOrders()));
         order.setTotalValue(order.getSubValue());
-        if(order.getDelivery() != null) order.setTotalValue(order.getTotalValue()+order.getDelivery().getFee());
+        if(order.getDelivery() != null) order.setTotalValue(calcularValorTotal(order, order.getDelivery().getFee()));
         order = orderRepository.save(order); 
         return convertOrderToTableDTO(order);
     }
@@ -280,7 +280,7 @@ public class OrderService {
     
     
 
-    public Double calcularValorTotal(List<ProductOrder> productOrders){
+    public Double calcularSubTotal(List<ProductOrder> productOrders){
         //System.out.println(productOrders.size());
         double totalValue = 0;
         if(productOrders != null){
@@ -289,6 +289,10 @@ public class OrderService {
             }
         }
         return totalValue;
+    }
+
+    public Double calcularValorTotal(Order order, double fee){
+        return order.getSubValue() + fee;
     }
 
     // Supply

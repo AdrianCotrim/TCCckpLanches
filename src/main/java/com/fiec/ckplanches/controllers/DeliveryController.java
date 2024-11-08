@@ -12,11 +12,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fiec.ckplanches.DTO.DeliveryDTO;
 import com.fiec.ckplanches.DTO.DeliveryTableDTO;
 import com.fiec.ckplanches.model.delivery.Delivery;
 import com.fiec.ckplanches.model.enums.Status;
 import com.fiec.ckplanches.repositories.DeliveryRepository;
 import com.fiec.ckplanches.services.DeliveryService;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -36,6 +40,21 @@ public class DeliveryController {
     public List<DeliveryTableDTO> getEntregas(){
         List<Delivery> delivery = deliveryRepository.findByStatus(Status.ATIVO);
         return deliveryService.getDelivery(delivery);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizarEntrega(@PathVariable int id, @RequestBody DeliveryDTO deliveryDTO, @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            DeliveryTableDTO deliveryTableDTO = deliveryService.atualizarDelivery(deliveryDTO, id);
+            logController.logAction(userDetails.getUsername(), "Atualizou um delivery", id);
+            return ResponseEntity.ok().body(deliveryTableDTO);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro ao atualizar entrega: "+ e);
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e){
+            System.out.println("Erro inesperado ao atualizar entrega: "+ e);
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
