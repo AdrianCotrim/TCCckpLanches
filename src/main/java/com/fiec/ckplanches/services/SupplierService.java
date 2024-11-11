@@ -78,6 +78,7 @@ public class SupplierService {
         if(supplierDTO.cnpj() != null) supplier.setCnpj(supplierDTO.cnpj());
         if(supplierDTO.social() != null) supplier.setSocial(supplierDTO.social());
         if(supplierDTO.address() != null) supplier.setAddress(supplierDTO.address());
+        if(supplierDTO.telefone() != null) supplier.setTelefone(supplierDTO.telefone());
         return supplier;
     }
     
