@@ -35,7 +35,7 @@ public class DashboardController {
     @GetMapping("/valores")
     public ResponseEntity<Map<String, Object>> values() {
         try {
-            int dayOfWeekHoje = LocalDateTime.now().plusHours(3).getDayOfWeek().getValue();
+            int dayOfWeekHoje = LocalDateTime.now().getDayOfWeek().getValue();
             int domingo = LocalDateTime.now().minusDays(dayOfWeekHoje-1).getDayOfMonth();
             LocalDateTime endDate = LocalDateTime.now();
             LocalDateTime startDate = endDate.minusDays(LocalDateTime.now().getDayOfWeek().getValue()+1);
@@ -50,13 +50,13 @@ public class DashboardController {
 
             // Processar gastos por lotes
             for (Lot lot : lots) {
-                int dayOfMoth = lot.getDateOfWithdrawal().plusHours(3).getDayOfMonth();
+                int dayOfMoth = lot.getDateOfWithdrawal().getDayOfMonth();
                 System.out.println(lot.getValue());
-                System.out.println(dayOfWeekHoje);
+                System.out.println(LocalDateTime.now().plusHours(3));
                 System.out.println(dayOfMoth);
                 System.out.println(domingo);
                 if(dayOfMoth >= domingo){
-                    int dayOfWeekIndex = (lot.getDateOfWithdrawal().plusHours(3).getDayOfWeek().getValue() % 7);
+                    int dayOfWeekIndex = (lot.getDateOfWithdrawal().getDayOfWeek().getValue() % 7);
                     if (dayOfWeekIndex < 0) dayOfWeekIndex = 6; // Ajustar para domingo como índice 0
                     spents[dayOfWeekIndex] += lot.getValue();
                 }
@@ -65,9 +65,9 @@ public class DashboardController {
 
             // Processar ganhos por vendas
             for (Order order : orders) {
-                int dayOfMoth = order.getEndDatetime().plusHours(3).getDayOfMonth();
+                int dayOfMoth = order.getEndDatetime().getDayOfMonth();
                 if(dayOfMoth >= domingo){
-                    int dayOfWeekIndex = (order.getEndDatetime().plusHours(3).getDayOfWeek().getValue() % 7);
+                    int dayOfWeekIndex = (order.getEndDatetime().getDayOfWeek().getValue() % 7);
                     if (dayOfWeekIndex < 0) dayOfWeekIndex = 6; // Ajustar para domingo como índice 0
                     earneds[dayOfWeekIndex] += order.getTotalValue();
                 }

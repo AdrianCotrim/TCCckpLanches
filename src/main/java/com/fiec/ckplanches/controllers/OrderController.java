@@ -99,6 +99,7 @@ public class OrderController {
 
             order.setOrderStatus(OrderStatus.valueOf(orderStatus.toUpperCase()));
 
+
             if(order.getOrderStatus() == OrderStatus.FINALIZADO) order.setEndDatetime(LocalDateTime.now());
             else if(order.getOrderStatus() == OrderStatus.PRONTO) order.setExitDatetime(LocalDateTime.now());
     
