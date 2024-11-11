@@ -71,6 +71,7 @@ public class LotController {
             logController.logAction(userDetails.getUsername(), "atualizou um lote", lotTableDTO.id());
             return ResponseEntity.ok(lotTableDTO);
         } catch (Exception e){
+            System.out.println(e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
