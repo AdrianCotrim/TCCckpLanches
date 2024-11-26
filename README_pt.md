@@ -3,56 +3,56 @@
 ## Screenshots
 
 ### Tela de Login
-![Tela de Login](screenshots/img1.png)
+![Tela de Login](./screenshots/img1.png)
 
 
 ### **Telas de Usuário**
 As telas para usuários comuns, que possuem permissões limitadas, incluem funcionalidades como consulta ao estoque e registro de vendas.
 
 ### Tela Principal Usuário
-![Tela Principal Usuário](screenshots/user/img2.jpg)
+![Tela Principal Usuário](./screenshots/user/img2.jpg)
 
 ### Tela de Pedidos
-![Tela de Pedidos](screenshots/user/img3.png)
+![Tela de Pedidos](./screenshots/user/img3.png)
 
 ### Tela de Entregas
-![Tela de Entregas](screenshots/user/img4.png)
+![Tela de Entregas](./screenshots/user/img4.png)
 
 ### Tela de Estoque
-![Tela de Estoque](screenshots/user/img5.jpg)
+![Tela de Estoque](./screenshots/user/img5.jpg)
 
 ### Tela de Cardápio
-![Tela de Cardápio](screenshots/user/img6.png)
+![Tela de Cardápio](./screenshots/user/img6.png)
 
 ### **Telas de Administrador**
 As telas para administradores, que possuem permissões totais, incluem funcionalidades como gerenciamento completo de estoque, geração de relatórios e análise de desempenho financeiro.
 
 ### Tela Principal Administrador
-![Tela Principal Administrador](screenshots/admin/img7.jpg)
+![Tela Principal Administrador](./screenshots/admin/img7.jpg)
 
 ### Tela de Pedidos
-![Tela de Pedidos](screenshots/admin/img8.png)
+![Tela de Pedidos](./screenshots/admin/img8.png)
 
 ### Tela de Entregas
-![Tela de Entregas](screenshots/admin/img9.jpg)
+![Tela de Entregas](./screenshots/admin/img9.jpg)
 
 ### Tela de Estoque
-![Tela de Estoque](screenshots/admin/img10.png)
+![Tela de Estoque](./screenshots/admin/img10.png)
 
 ### Tela de Histórico de Vendas
-![Tela de Histórico de Vendas](screenshots/admin/img11.png)
+![Tela de Histórico de Vendas](./screenshots/admin/img11.png)
 
 ### Tela de Cardápio
-![Tela de Cardápio](screenshots/admin/img12.png)
+![Tela de Cardápio](./screenshots/admin/img12.png)
 
 ### Tela de Administrar Usuários
-![Tela de Administrar Usuários](screenshots/admin/img13.png)
+![Tela de Administrar Usuários](./screenshots/admin/img13.png)
 
 ### Tela de Fornecedores
-![Tela de Fornecedores](screenshots/admin/img14.png)
+![Tela de Fornecedores](./screenshots/admin/img14.png)
 
 ### Tela de Lotes
-![Tela de Lotes](screenshots/admin/img15.png)
+![Tela de Lotes](./screenshots/admin/img15.png)
 
 ## Como Executar o Projeto
 

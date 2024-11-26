@@ -3,55 +3,55 @@
 ## Screenshots
 
 ### Login Screen
-![Login Screen](screenshots/img1.png)
+![Login Screen](./screenshots/img1.png)
 
 ### **User Screens**
 The screens for regular users, who have limited permissions, include features such as inventory lookup and sales registration.
 
 ### User Main Screen
-![User Main Screen](screenshots/user/img2.jpg)
+![User Main Screen](./screenshots/user/img2.jpg)
 
 ### Orders Screen
-![Orders Screen](screenshots/user/img3.png)
+![Orders Screen](./screenshots/user/img3.png)
 
 ### Deliveries Screen
-![Deliveries Screen](screenshots/user/img4.png)
+![Deliveries Screen](./screenshots/user/img4.png)
 
 ### Inventory Screen
-![Inventory Screen](screenshots/user/img5.jpg)
+![Inventory Screen](./screenshots/user/img5.jpg)
 
 ### Menu Screen
-![Menu Screen](screenshots/user/img6.png)
+![Menu Screen](./screenshots/user/img6.png)
 
 ### **Administrator Screens**
 The screens for administrators, who have full permissions, include features such as complete inventory management, report generation, and financial performance analysis.
 
 ### Administrator Main Screen
-![Administrator Main Screen](screenshots/admin/img7.jpg)
+![Administrator Main Screen](./screenshots/admin/img7.jpg)
 
 ### Orders Screen
-![Orders Screen](screenshots/admin/img8.png)
+![Orders Screen](./screenshots/admin/img8.png)
 
 ### Deliveries Screen
-![Deliveries Screen](screenshots/admin/img9.jpg)
+![Deliveries Screen](./screenshots/admin/img9.jpg)
 
 ### Inventory Screen
-![Inventory Screen](screenshots/admin/img10.png)
+![Inventory Screen](./screenshots/admin/img10.png)
 
 ### Sales History Screen
-![Sales History Screen](screenshots/admin/img11.png)
+![Sales History Screen](./screenshots/admin/img11.png)
 
 ### Menu Screen
-![Menu Screen](screenshots/admin/img12.png)
+![Menu Screen](./screenshots/admin/img12.png)
 
 ### Manage Users Screen
-![Manage Users Screen](screenshots/admin/img13.png)
+![Manage Users Screen](./screenshots/admin/img13.png)
 
 ### Suppliers Screen
-![Suppliers Screen](screenshots/admin/img14.png)
+![Suppliers Screen](./screenshots/admin/img14.png)
 
 ### Batches Screen
-![Batches Screen](screenshots/admin/img15.png)
+![Batches Screen](./screenshots/admin/img15.png)
 
 ## How to Run the Project
 
