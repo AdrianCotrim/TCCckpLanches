@@ -3,7 +3,7 @@
 ## Screenshots
 
 ### Tela de Login
-![Tela de Login](./screenshots/img1.png)
+![Tela de Login](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/img1.PNG?raw=true)
 
 
 ### **Telas de Usuário**
