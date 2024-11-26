@@ -3,55 +3,56 @@
 ## Screenshots
 
 ### Login Screen
-![Login Screen](./screenshots/img1.png)
+![Login Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/img1.PNG?raw=true)
 
 ### **User Screens**
-The screens for regular users, who have limited permissions, include features such as inventory lookup and sales registration.
+These screens are for regular users with limited permissions, featuring functionalities like stock queries and sales registration.
 
-### User Main Screen
-![User Main Screen](./screenshots/user/img2.jpg)
+### User Dashboard
+![User Dashboard](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/user/img2.jpg?raw=true)
 
 ### Orders Screen
-![Orders Screen](./screenshots/user/img3.png)
+![Orders Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/user/img3.PNG?raw=true)
 
 ### Deliveries Screen
-![Deliveries Screen](./screenshots/user/img4.png)
+![Deliveries Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/user/img4.PNG?raw=true)
 
-### Inventory Screen
-![Inventory Screen](./screenshots/user/img5.jpg)
+### Stock Screen
+![Stock Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/user/img5.jpg?raw=true)
 
 ### Menu Screen
-![Menu Screen](./screenshots/user/img6.png)
+![Menu Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/user/img6.PNG?raw=true)
 
 ### **Administrator Screens**
-The screens for administrators, who have full permissions, include features such as complete inventory management, report generation, and financial performance analysis.
+These screens are for administrators with full permissions, including functionalities such as complete stock management, report generation, and financial performance analysis.
 
-### Administrator Main Screen
-![Administrator Main Screen](./screenshots/admin/img7.jpg)
+### Admin Dashboard
+![Admin Dashboard](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/admin/img7.jpg?raw=true)
 
 ### Orders Screen
-![Orders Screen](./screenshots/admin/img8.png)
+![Orders Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/admin/img8.PNG?raw=true)
 
 ### Deliveries Screen
-![Deliveries Screen](./screenshots/admin/img9.jpg)
+![Deliveries Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/admin/img9.jpg?raw=true)
 
-### Inventory Screen
-![Inventory Screen](./screenshots/admin/img10.png)
+### Stock Screen
+![Stock Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/admin/img10.PNG?raw=true)
 
 ### Sales History Screen
-![Sales History Screen](./screenshots/admin/img11.png)
+![Sales History Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/admin/img11.PNG?raw=true)
 
 ### Menu Screen
-![Menu Screen](./screenshots/admin/img12.png)
+![Menu Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/admin/img12.PNG?raw=true)
 
 ### Manage Users Screen
-![Manage Users Screen](./screenshots/admin/img13.png)
+![Manage Users Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/admin/img13.PNG?raw=true)
 
 ### Suppliers Screen
-![Suppliers Screen](./screenshots/admin/img14.png)
+![Suppliers Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/admin/img14.PNG?raw=true)
 
 ### Batches Screen
-![Batches Screen](./screenshots/admin/img15.png)
+![Batches Screen](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/admin/img15.PNG?raw=true)
+
 
 ## How to Run the Project
 
