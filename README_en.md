@@ -3,7 +3,7 @@
 ## Screenshots
 
 ### Login Screen
-![Login Screen](./screenshots/img1.png)
+![Tela de Login](https://github.com/LuisGustavoDev/TCCckpLanches/blob/main/screenshots/img1.PNG?raw=true)
 
 ### **User Screens**
 The screens for regular users, who have limited permissions, include features such as inventory lookup and sales registration.
