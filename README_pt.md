@@ -1,5 +1,45 @@
 # CKP Lanches
 
+**CKP Lanches** é um **sistema personalizado** de gestão de pedidos, estoque e entregas, desenvolvido para otimizar a operação de lanchonetes e redes de fast-food. O sistema oferece uma interface intuitiva e funcional, dividida em **usuários comuns** e **administradores**, com funcionalidades específicas para cada perfil de acesso.
+
+## Sumário
+
+1. [Visão Geral](#visão-geral)
+2. [Funcionalidades para Usuários Comuns](#funcionalidades-para-usuários-comuns)
+3. [Funcionalidades para Administradores](#funcionalidades-para-administradores)
+4. [Vantagens do Sistema Personalizado](#vantagens-do-sistema-personalizado)
+5. [Screenshots](#screenshots)
+6. [Como Executar o Projeto](#como-executar-o-projeto)
+
+### Visão Geral
+
+- **CKP Lanches** é um sistema feito sob medida para otimizar a gestão de pedidos e controle de estoque em lanchonetes.
+- Possui interfaces dedicadas a **usuários comuns** e **administradores**, com funcionalidades adaptadas a diferentes níveis de permissão.
+- O sistema inclui recursos de **controle de insumos**, **gestão de estoque**, **gestão de pedidos**, entre outros.
+
+### Funcionalidades para Usuários Comuns
+
+- **Consulta ao Estoque**: Verificação da quantidade disponível de itens.
+- **Registro de Vendas**: Interface simples para registrar vendas realizadas.
+- **Gestão de Pedidos**: Acompanhamento de pedidos feitos pelos clientes.
+- **Gestão de Entregas**: Visualização do status das entregas e seus detalhes.
+
+### Funcionalidades para Administradores
+
+- **Gerenciamento Completo de Estoque**: Administração dos itens em estoque, inclusão e atualização de produtos.
+- **Relatórios de Insumos**: Geração de relatórios detalhados sobre os insumos utilizados e estoque de matérias-primas.
+  - **Insumos Abaixo da Média**: Identificação de itens que estão com níveis de consumo ou estoque abaixo da média esperada.
+  - **Quantidade de Itens no Estoque**: Monitoramento da quantidade atual dos itens em estoque para garantir que a reposição seja feita de forma eficiente.
+- **Gestão de Usuários e Fornecedores**: Controle de acesso de usuários do sistema e gerenciamento de fornecedores.
+- **Administração de Lotes**: Controle de lotes de produtos, para garantir o fluxo correto de entradas e saídas.
+
+### Vantagens do Sistema Personalizado
+
+- **Adaptação às Necessidades do Negócio**: Funcionalidades e fluxos de trabalho feitos sob medida para o tipo de operação da lanchonete.
+- **Segurança Avançada**: Proteção de dados sensíveis e autenticação via JWT.
+- **Facilidade de Uso**: Interface intuitiva tanto para usuários quanto para administradores.
+- **Escalabilidade**: O sistema foi desenvolvido com foco em crescimento, podendo ser facilmente adaptado para novas funcionalidades no futuro.
+
 ## Screenshots
 
 ### Tela de Login

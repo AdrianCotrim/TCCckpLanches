@@ -1,5 +1,45 @@
 # CKP Lanches
 
+**CKP Lanches** is a **customized system** for managing orders, inventory, and deliveries, developed to optimize the operation of snack bars and fast-food chains. The system offers an intuitive and functional interface, divided into **regular users** and **administrators**, with specific features for each access level.
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Features for Regular Users](#features-for-regular-users)
+3. [Features for Administrators](#features-for-administrators)
+4. [Advantages of the Customized System](#advantages-of-the-customized-system)
+5. [Screenshots](#screenshots)
+6. [How to Run the Project](#how-to-run-the-project)
+
+### Overview
+
+- **CKP Lanches** is a tailored system designed to optimize order management and inventory control in snack bars.
+- It includes dedicated interfaces for **regular users** and **administrators**, with features adapted to different permission levels.
+- The system includes resources for **inventory control**, **order management**, **insum report generation**, and more.
+
+### Features for Regular Users
+
+- **Inventory Check**: Verify the available quantity of items.
+- **Sales Record**: Simple interface to record sales made.
+- **Order Management**: Track orders placed by customers.
+- **Delivery Management**: View delivery status and related details.
+
+### Features for Administrators
+
+- **Complete Inventory Management**: Administer stock items, including adding and updating products.
+- **Insum Reports**: Generate detailed reports on used insums and stock of raw materials.
+  - **Insum Below Average**: Identify items that are either being consumed or stocked below the expected average.
+  - **Stock Quantity**: Monitor the current quantity of items in stock to ensure efficient replenishment.
+- **User and Supplier Management**: Control user access to the system and manage suppliers.
+- **Batch Administration**: Control product batches to ensure the correct flow of stock entries and exits.
+
+### Advantages of the Customized System
+
+- **Tailored to Business Needs**: Features and workflows custom-built for the specific operations of the snack bar.
+- **Advanced Security**: Protection of sensitive data and authentication via JWT.
+- **Ease of Use**: Intuitive interface for both regular users and administrators.
+- **Scalability**: The system is developed with scalability in mind, making it easy to adapt for future functionalities.
+
 ## Screenshots
 
 ### Login Screen
